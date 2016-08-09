@@ -22,7 +22,7 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-package de.lorenzwiest.atari6502assembler.test;
+package de.lorenzwiest.atari6502assembler.tests;
 
 import org.junit.Test;
 
