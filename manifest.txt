@@ -1,0 +1,1 @@
+Main-Class: de.lorenzwiest.atari6502assembler.Atari6502Assembler
