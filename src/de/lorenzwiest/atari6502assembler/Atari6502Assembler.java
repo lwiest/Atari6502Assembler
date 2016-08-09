@@ -424,9 +424,9 @@ public class Atari6502Assembler {
 				writeSegments(out, segments);
 			}
 		} catch (FileNotFoundException e) {
-			System.out.println("Error: File \"" + e.getMessage() + "\" not found");  // TODO: Which file?
+			System.out.println("Error: File not found: " + e.getMessage());
 		} catch (IOException e) {
-			System.out.println("Error: IOException");
+			System.out.println("Error: I/O exception");
 		} catch (ExpressionException e) {
 			System.out.println(e.getErrorMessage());
 		} catch (AssemblerException e) {
