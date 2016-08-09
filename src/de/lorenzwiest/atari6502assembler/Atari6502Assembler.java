@@ -162,19 +162,19 @@ public class Atari6502Assembler {
 		final static private Pattern PATTERN_LABEL = Pattern.compile("^([A-Z@:\\?][A-Z0-9@:\\?\\.]*)");
 
 		/*
-		 * ^            | Start of string
-		 * \s*          | Match any whitespace, consumed ###
-		 * (            | Start capture group 1
-		 * \*=          | Match "*="
-		 * |            | ..or..
-		 * =            | Match an equal sign (=)
-		 * |            | ..or..
-		 * \.BYTE\s     | Match ".BYTE "
-		 * |            | ..or..
-		 * \.WORD\s     | Match ".WORD "
-		 * |            | ..or..
-		 * [A-Z]{1,3}   | 3 upper-case letters
-		 * )            | End capture group 1
+		 * ^                 | Start of string
+		 * \s*               | Match any whitespace, consumed ###
+		 * (                 | Start capture group 1
+		 * \*=               | Match "*="
+		 * |                 | ..or..
+		 * =                 | Match an equal sign (=)
+		 * |                 | ..or..
+		 * \.BYTE\s          | Match ".BYTE "
+		 * |                 | ..or..
+		 * \.WORD\s          | Match ".WORD "
+		 * |                 | ..or..
+		 * [A-Z]{1,3}        | 3 upper-case letters
+		 * )                 | End capture group 1
 		 */
 		final static private Pattern PATTERN_OP = Pattern.compile("^\\s+(\\*=|=|\\.BYTE\\s|\\.WORD\\s|[A-Z]{3})");
 
