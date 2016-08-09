@@ -29,7 +29,7 @@ import org.junit.Test;
 import de.lorenzwiest.atari6502assembler.Atari6502Assembler;
 import de.lorenzwiest.atari6502assembler.Atari6502Assembler.LineOfCode;
 
-public class ParseLineOfCodeTest {
+public class ParseLineOfCodeTests {
 
 	@Test
 	public void testParseLineOfCode() {
