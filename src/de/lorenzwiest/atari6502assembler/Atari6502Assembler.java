@@ -219,31 +219,31 @@ public class Atari6502Assembler {
 	private static final String CR = System.getProperty("line.separator");
 
 	private final static String VERSION_CREATED_DATE = "20-Dec-2001";
-	private final static String VERSION_LAST_CHANGE_DATE = "01-Aug-2016";
+	private final static String VERSION_LAST_CHANGE_DATE = "14-Aug-2016";
 
 	private final static String HELP_TEXT =
-			"   _  _            _    __ ___  __ ___     _                     _    _" + CR + //
-			"  /_\\| |_ __ _ _ _(_)  / /| __|/  \\_  )   /_\\   ______ ___ _ __ | |__| |___ _ _" + CR + //
-			" / _ \\  _/ _` | '_| | / _ \\__ \\ () / /   / _ \\ (_-<_-</ -_) '  \\| '_ \\ | -_) '_|" + CR + //
-			"/_/ \\_\\__\\__,_|_| |_| \\___/___/\\__/___| /_/ \\_\\/__/__/\\___|_|_|_|_.__/_|___|_|" + CR + //
-			CR + //
-			"Atari 6502 Assembler V2.0 (C) by Lorenz Wiest, created: %s, last change: %s" + CR + //
-			CR + //
-			"Usage: java Atari6502Assembler [<options>] <infile> [<outfile>] [> <listfile>]" + CR + //
-			CR + //
-			"<options> (default values in {})" + CR + //
-			"  -showHeader=<true|false>      | If true then show assembly header {true}" + CR + //
-			"  -showObject=<true|false>      | If true then show object addresses and bytes {true}" + CR + //
-			"  -showLineNumbers=<true|false> | If true then show line numbers {true}" + CR + //
-			"  -lineNumberStart=<n>          | Line number start {1}" + CR + //
-			"  -lineNumberInc=<n>            | Line number increment {1}" + CR + //
-			"  -padLineNumbers=<true|false>  | If true then pad line numbers with \"0\" {true}" + CR + //
-			"  -instructionPos=<n>           | Column number of instructions {16}" + CR + //
-			"  -symbolPos=<n>                | Column number of symbol expressions {16}" + CR + //
-			"  -commentPos=<n>               | Column number of comments. If 0 then ignored. {0}" + CR + //
-			"<infile>   - Assembler source file" + CR + //
-			"<outfile>  - Assembled object file" + CR + //
-			"<listfile> - Assembler listing file";
+					"   _  _            _    __ ___  __ ___     _                     _    _" + CR + //
+					"  /_\\| |_ __ _ _ _(_)  / /| __|/  \\_  )   /_\\   ______ ___ _ __ | |__| |___ _ _" + CR + //
+					" / _ \\  _/ _` | '_| | / _ \\__ \\ () / /   / _ \\ (_-<_-</ -_) '  \\| '_ \\ | -_) '_|" + CR + //
+					"/_/ \\_\\__\\__,_|_| |_| \\___/___/\\__/___| /_/ \\_\\/__/__/\\___|_|_|_|_.__/_|___|_|" + CR + //
+					CR + //
+					"Atari 6502 Assembler V2.0 (C) by Lorenz Wiest, created: %s, last change: %s" + CR + //
+					CR + //
+					"Usage: java Atari6502Assembler [<options>] <infile> [<outfile>] [> <listfile>]" + CR + //
+					CR + //
+					"<options> (default values in {})" + CR + //
+					"  -showHeader=<true|false>      | If true then show assembly header {true}" + CR + //
+					"  -showObject=<true|false>      | If true then show object addresses and bytes {true}" + CR + //
+					"  -showLineNumbers=<true|false> | If true then show line numbers {true}" + CR + //
+					"  -lineNumberStart=<n>          | Line number start {1}" + CR + //
+					"  -lineNumberInc=<n>            | Line number increment {1}" + CR + //
+					"  -padLineNumbers=<true|false>  | If true then pad line numbers with \"0\" {true}" + CR + //
+					"  -instructionPos=<n>           | Column number of instructions {16}" + CR + //
+					"  -labelExprPos=<n>             | Column number of label expressions {16}" + CR + //
+					"  -commentPos=<n>               | Column number of comments. If 0 then ignored. {0}" + CR + //
+					"<infile>   - Assembler source file" + CR + //
+					"<outfile>  - Assembled object file" + CR + //
+					"<listfile> - Assembler listing file";
 
 	private final static String HEADER_TEXT = "Atari 6502 Assembler V2.0 - Assembly Date: %s";
 
@@ -257,7 +257,7 @@ public class Atari6502Assembler {
 	private int optLineNumberInc = 1;
 	private boolean optPadLineNumbers = true;
 	private int optInstructionPos = 16;
-	private int optSymbolPos = 16;
+	private int optLabelExprPos = 16;
 	private int optCommentPos = 0;
 	private String inFilename;
 	private String outFilename;
@@ -282,7 +282,7 @@ public class Atari6502Assembler {
 		final String OPT_LINE_NUMBER_INC = "-lineNumberInc=";
 		final String OPT_PAD_LINE_NUMBERS = "-padLineNumbers=";
 		final String OPT_INSTRUCTION_POS = "-instructionPos=";
-		final String OPT_SYMBOL_POS = "-symbolPos=";
+		final String OPT_LABEL_EXPR_POS = "-labelExprPos=";
 		final String OPT_COMMENT_POS = "-commentPos=";
 
 		if (args.length == 0) {
@@ -306,16 +306,16 @@ public class Atari6502Assembler {
 					System.out.println("Option " + OPT_INSTRUCTION_POS + " has invalid value \""+ strValue + "\". Valid values are positive integers.");
 					return PARSE_ARGS_ERROR;
 				}
-			} else if (arg.startsWith(OPT_SYMBOL_POS)) {
-				String strValue = arg.substring(OPT_SYMBOL_POS.length());
+			} else if (arg.startsWith(OPT_LABEL_EXPR_POS)) {
+				String strValue = arg.substring(OPT_LABEL_EXPR_POS.length());
 				try {
 					int value = Integer.parseInt(strValue);
 					if (value < 0) {
 						throw new NumberFormatException();
 					}
-					this.optSymbolPos = value;
+					this.optLabelExprPos = value;
 				} catch (NumberFormatException e) {
-					System.out.println("Option " + OPT_SYMBOL_POS + " has invalid value \""+ strValue + "\". Valid values are positive integers.");
+					System.out.println("Option " + OPT_LABEL_EXPR_POS + " has invalid value \""+ strValue + "\". Valid values are positive integers.");
 					return PARSE_ARGS_ERROR;
 				}
 			} else if (arg.startsWith(OPT_COMMENT_POS)) {
@@ -698,7 +698,7 @@ public class Atari6502Assembler {
 
 		StringBuffer sb = new StringBuffer();
 		if (op.length() > 0) {
-			int indentPos = op.equals("=") ? this.optSymbolPos : this.optInstructionPos;
+			int indentPos = op.equals("=") ? this.optLabelExprPos : this.optInstructionPos;
 			sb.append(padRight(label, indentPos));
 			sb.append(op);
 			if (arg.length() > 0) {
@@ -818,66 +818,66 @@ public class Atari6502Assembler {
 	private static final int ZEROPAGEY = 13;
 
 	private static final int[] INSTRUCTION_LENGTH = {
-			0, 1, 1, 3, 2, 2, 3, 3, 2, 2, 2, 2, 3, 2
+		0, 1, 1, 3, 2, 2, 3, 3, 2, 2, 2, 2, 3, 2
 	};
 
 	private static final String[][] OP_CODES = {
-			{ "ADC",   "",   "", "6D", "65", "69", "7D", "79", "61", "71", "75",   "",   "",   "" },
-			{ "AND",   "",   "", "2D", "25", "29", "3D", "39", "21", "31", "36",   "",   "",   "" },
-			{ "ASL",   "", "0A", "0E", "06",   "", "1E",   "",   "",   "", "16",   "",   "",   "" },
-			{ "BCC",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "", "90",   "",   "" },
-			{ "BCS",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "", "B0",   "",   "" },
-			{ "BEQ",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "", "F0",   "",   "" },
-			{ "BIT",   "",   "", "2C", "24",   "",   "",   "",   "",   "",   "",   "",   "",   "" },
-			{ "BMI",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "", "30",   "",   "" },
-			{ "BNE",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "", "D0",   "",   "" },
-			{ "BPL",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "", "10",   "",   "" },
-			{ "BRK", "00",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "" },
-			{ "BVC",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "", "50",   "",   "" },
-			{ "BVS",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "", "70",   "",   "" },
-			{ "CLC", "18",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "" },
-			{ "CLD", "D8",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "" },
-			{ "CLI", "58",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "" },
-			{ "CLV", "88",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "" },
-			{ "CMP",   "",   "", "CD", "C5", "C9", "DD", "D9", "C1", "D1", "D5",   "",   "",   "" },
-			{ "CPX",   "",   "", "EC", "E4", "E0",   "",   "",   "",   "",   "",   "",   "",   "" },
-			{ "CPY",   "",   "", "CC", "C4", "C0",   "",   "",   "",   "",   "",   "",   "",   "" },
-			{ "DEC",   "",   "", "CE", "C6",   "", "DE",   "",   "",   "", "D6",   "",   "",   "" },
-			{ "DEX", "CA",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "" },
-			{ "DEY", "88",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "" },
-			{ "EOR",   "",   "", "4D", "45", "49", "5D", "59", "41", "51", "55",   "",   "",   "" },
-			{ "INC",   "",   "", "EE", "E6",   "", "FE",   "",   "",   "", "F6",   "",   "",   "" },
-			{ "INX", "E8",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "" },
-			{ "INY", "C8",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "" },
-			{ "JMP",   "",   "", "4C",   "",   "",   "",   "",   "",   "",   "",   "", "6C",   "" },
-			{ "JSR",   "",   "", "20",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "" },
-			{ "LDA",   "",   "", "AD", "A5", "A9", "BD", "B9", "A1", "B1", "B5",   "",   "",   "" },
-			{ "LDX",   "",   "", "AE", "A6", "A2",   "", "BE",   "",   "",   "",   "",   "", "B6" },
-			{ "LDY",   "",   "", "AC", "A4", "A0", "BC",   "",   "",   "", "B4",   "",   "",   "" },
-			{ "LSR",   "", "4A", "4E", "46",   "", "5E",   "",   "",   "", "56",   "",   "",   "" },
-			{ "NOP", "EA",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "" },
-			{ "ORA",   "",   "", "0D", "05", "09", "1D", "19", "01", "11", "15",   "",   "",   "" },
-			{ "PHA", "48",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "" },
-			{ "PHP", "08",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "" },
-			{ "PLA", "68",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "" },
-			{ "PLP", "28",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "" },
-			{ "ROL",   "", "2A", "2E", "26",   "", "3E",   "",   "",   "", "36",   "",   "",   "" },
-			{ "ROR",   "", "6A", "6E", "66",   "", "7E",   "",   "",   "", "76",   "",   "",   "" },
-			{ "RTI", "40",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "" },
-			{ "RTS", "60",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "" },
-			{ "SBC",   "",   "", "ED", "E5", "E9", "FD", "F9", "E1", "F1", "F5",   "",   "",   "" },
-			{ "SEC", "38",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "" },
-			{ "SED", "F8",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "" },
-			{ "SEI", "78",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "" },
-			{ "STA",   "",   "", "8D", "85",   "", "9D", "99", "81", "91", "95",   "",   "",   "" },
-			{ "STX",   "",   "", "8E", "86",   "",   "",   "",   "",   "",   "",   "",   "", "96" },
-			{ "STY",   "",   "", "8C", "84",   "",   "",   "",   "", "94",   "",   "",   "",   "" },
-			{ "TAX", "AA",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "" },
-			{ "TAY", "A8",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "" },
-			{ "TSX", "BA",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "" },
-			{ "TXA", "8A",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "" },
-			{ "TXS", "9A",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "" },
-			{ "TYA", "98",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "" }
+		{ "ADC",   "",   "", "6D", "65", "69", "7D", "79", "61", "71", "75",   "",   "",   "" },
+		{ "AND",   "",   "", "2D", "25", "29", "3D", "39", "21", "31", "36",   "",   "",   "" },
+		{ "ASL",   "", "0A", "0E", "06",   "", "1E",   "",   "",   "", "16",   "",   "",   "" },
+		{ "BCC",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "", "90",   "",   "" },
+		{ "BCS",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "", "B0",   "",   "" },
+		{ "BEQ",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "", "F0",   "",   "" },
+		{ "BIT",   "",   "", "2C", "24",   "",   "",   "",   "",   "",   "",   "",   "",   "" },
+		{ "BMI",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "", "30",   "",   "" },
+		{ "BNE",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "", "D0",   "",   "" },
+		{ "BPL",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "", "10",   "",   "" },
+		{ "BRK", "00",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "" },
+		{ "BVC",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "", "50",   "",   "" },
+		{ "BVS",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "", "70",   "",   "" },
+		{ "CLC", "18",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "" },
+		{ "CLD", "D8",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "" },
+		{ "CLI", "58",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "" },
+		{ "CLV", "88",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "" },
+		{ "CMP",   "",   "", "CD", "C5", "C9", "DD", "D9", "C1", "D1", "D5",   "",   "",   "" },
+		{ "CPX",   "",   "", "EC", "E4", "E0",   "",   "",   "",   "",   "",   "",   "",   "" },
+		{ "CPY",   "",   "", "CC", "C4", "C0",   "",   "",   "",   "",   "",   "",   "",   "" },
+		{ "DEC",   "",   "", "CE", "C6",   "", "DE",   "",   "",   "", "D6",   "",   "",   "" },
+		{ "DEX", "CA",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "" },
+		{ "DEY", "88",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "" },
+		{ "EOR",   "",   "", "4D", "45", "49", "5D", "59", "41", "51", "55",   "",   "",   "" },
+		{ "INC",   "",   "", "EE", "E6",   "", "FE",   "",   "",   "", "F6",   "",   "",   "" },
+		{ "INX", "E8",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "" },
+		{ "INY", "C8",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "" },
+		{ "JMP",   "",   "", "4C",   "",   "",   "",   "",   "",   "",   "",   "", "6C",   "" },
+		{ "JSR",   "",   "", "20",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "" },
+		{ "LDA",   "",   "", "AD", "A5", "A9", "BD", "B9", "A1", "B1", "B5",   "",   "",   "" },
+		{ "LDX",   "",   "", "AE", "A6", "A2",   "", "BE",   "",   "",   "",   "",   "", "B6" },
+		{ "LDY",   "",   "", "AC", "A4", "A0", "BC",   "",   "",   "", "B4",   "",   "",   "" },
+		{ "LSR",   "", "4A", "4E", "46",   "", "5E",   "",   "",   "", "56",   "",   "",   "" },
+		{ "NOP", "EA",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "" },
+		{ "ORA",   "",   "", "0D", "05", "09", "1D", "19", "01", "11", "15",   "",   "",   "" },
+		{ "PHA", "48",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "" },
+		{ "PHP", "08",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "" },
+		{ "PLA", "68",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "" },
+		{ "PLP", "28",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "" },
+		{ "ROL",   "", "2A", "2E", "26",   "", "3E",   "",   "",   "", "36",   "",   "",   "" },
+		{ "ROR",   "", "6A", "6E", "66",   "", "7E",   "",   "",   "", "76",   "",   "",   "" },
+		{ "RTI", "40",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "" },
+		{ "RTS", "60",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "" },
+		{ "SBC",   "",   "", "ED", "E5", "E9", "FD", "F9", "E1", "F1", "F5",   "",   "",   "" },
+		{ "SEC", "38",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "" },
+		{ "SED", "F8",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "" },
+		{ "SEI", "78",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "" },
+		{ "STA",   "",   "", "8D", "85",   "", "9D", "99", "81", "91", "95",   "",   "",   "" },
+		{ "STX",   "",   "", "8E", "86",   "",   "",   "",   "",   "",   "",   "",   "", "96" },
+		{ "STY",   "",   "", "8C", "84",   "",   "",   "",   "", "94",   "",   "",   "",   "" },
+		{ "TAX", "AA",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "" },
+		{ "TAY", "A8",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "" },
+		{ "TSX", "BA",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "" },
+		{ "TXA", "8A",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "" },
+		{ "TXS", "9A",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "" },
+		{ "TYA", "98",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "",   "" }
 	};
 
 	private static final Map<String /* opCode key*/, Integer /* opCode */> OP_CODES_MAP = new HashMap<String, Integer>();
