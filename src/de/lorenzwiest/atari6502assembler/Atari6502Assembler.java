@@ -965,7 +965,8 @@ public class Atari6502Assembler {
 			} catch (ExpressionException e) {
 				throw e;
 			}
-			return (value <= 0xFF) ? ZEROPAGE : ABSOLUTE;
+			boolean hasZeroPageMode = hasOpCode(op, ZEROPAGE);
+			return (value <= 0xFF && hasZeroPageMode) ? ZEROPAGE : ABSOLUTE;
 		}
 		return UNKNOWN;
 	}
