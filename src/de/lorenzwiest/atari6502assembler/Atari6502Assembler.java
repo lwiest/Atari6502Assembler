@@ -513,6 +513,11 @@ public class Atari6502Assembler {
 						if (pc == UNDEFINED) {
 							throw new NoOriginException();
 						}
+						int opMode = getOpMode(op, arg);
+						int opCode = getOpCode(op, opMode);
+						if (opCode == UNKNOWN) {
+							throw new IllegalInstructionException(op + " " + arg);
+						}
 						pc += getNumBytes(op, arg);
 					} else if (op.length() > 0) {
 						throw new IllegalInstructionException(op);
@@ -910,7 +915,7 @@ public class Atari6502Assembler {
 		String opCodeKey = getOpCodeKey(op, opMode);
 		Integer opCode = OP_CODES_MAP.get(opCodeKey);
 		if (opCode == null) {
-			throw new IllegalInstructionException(op);
+			return UNKNOWN;
 		}
 		return opCode.intValue();
 	}
@@ -1065,6 +1070,10 @@ public class Atari6502Assembler {
 			}
 		} else if (isOpMemnonic(op)) {
 			int opMode = getOpMode(op, arg);
+			int opCode = getOpCode(op, opMode);
+			if (opCode == UNKNOWN) {
+				throw new IllegalInstructionException(op + " " + arg);
+			}
 			writeByte(out, getOpCode(op, opMode));
 
 			String argExpr;
