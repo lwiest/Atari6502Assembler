@@ -229,28 +229,28 @@ public class Atari6502Assembler {
 	private final static String VERSION_LAST_CHANGE_DATE = "14-Aug-2016";
 
 	private final static String HELP_TEXT =
-					"   _  _            _    __ ___  __ ___     _                     _    _" + CR + //
-					"  /_\\| |_ __ _ _ _(_)  / /| __|/  \\_  )   /_\\   ______ ___ _ __ | |__| |___ _ _" + CR + //
-					" / _ \\  _/ _` | '_| | / _ \\__ \\ () / /   / _ \\ (_-<_-</ -_) '  \\| '_ \\ | -_) '_|" + CR + //
-					"/_/ \\_\\__\\__,_|_| |_| \\___/___/\\__/___| /_/ \\_\\/__/__/\\___|_|_|_|_.__/_|___|_|" + CR + //
-					CR + //
-					"Atari 6502 Assembler V2.0 (C) by Lorenz Wiest, created: %s, last change: %s" + CR + //
-					CR + //
-					"Usage: java Atari6502Assembler [<options>] <infile> [<outfile>] [> <listfile>]" + CR + //
-					CR + //
-					"<options> (default values in {})" + CR + //
-					"  -showHeader=<true|false>      | If true then show assembly header {true}" + CR + //
-					"  -showObject=<true|false>      | If true then show object addresses and bytes {true}" + CR + //
-					"  -showLineNumbers=<true|false> | If true then show line numbers {true}" + CR + //
-					"  -lineNumberStart=<n>          | Line number start {1}" + CR + //
-					"  -lineNumberInc=<n>            | Line number increment {1}" + CR + //
-					"  -padLineNumbers=<true|false>  | If true then pad line numbers with \"0\" {true}" + CR + //
-					"  -instructionPos=<n>           | Column number of instructions {16}" + CR + //
-					"  -labelExprPos=<n>             | Column number of label expressions {16}" + CR + //
-					"  -commentPos=<n>               | Column number of comments. If 0 then ignored. {0}" + CR + //
-					"<infile>   - Assembler source file" + CR + //
-					"<outfile>  - Assembled object file" + CR + //
-					"<listfile> - Assembler listing file";
+			"   _  _            _    __ ___  __ ___     _                     _    _" + CR + //
+			"  /_\\| |_ __ _ _ _(_)  / /| __|/  \\_  )   /_\\   ______ ___ _ __ | |__| |___ _ _" + CR + //
+			" / _ \\  _/ _` | '_| | / _ \\__ \\ () / /   / _ \\ (_-<_-</ -_) '  \\| '_ \\ | -_) '_|" + CR + //
+			"/_/ \\_\\__\\__,_|_| |_| \\___/___/\\__/___| /_/ \\_\\/__/__/\\___|_|_|_|_.__/_|___|_|" + CR + //
+			CR + //
+			"Atari 6502 Assembler V2.0 (C) by Lorenz Wiest, created: %s, last change: %s" + CR + //
+			CR + //
+			"Usage: java Atari6502Assembler [<options>] <infile> [<outfile>] [> <listfile>]" + CR + //
+			CR + //
+			"<options> (default values in {})" + CR + //
+			"  -showHeader=true|false      | If true then print assembly header {true}" + CR + //
+			"  -showObject=true|false      | If true then print object addresses and bytes {true}" + CR + //
+			"  -showLineNumbers=true|false | If true then print line numbers {true}" + CR + //
+			"  -lineNumberStart=<n>        | Set start line number {1}" + CR + //
+			"  -lineNumberInc=<n>          | Set line number increment {1}" + CR + //
+			"  -padLineNumbers=true|false  | If true then pad line numbers with \"0\" {true}" + CR + //
+			"  -instructionPos=<n>         | Set column number of instructions {16}" + CR + //
+			"  -labelExprPos=<n>           | Set column number of label expressions {16}" + CR + //
+			"  -commentPos=<n>             | Set column number of comments. Ignored if 0. {0}" + CR + //
+			"<infile>   - 6502 assembly language source code file" + CR + //
+			"<outfile>  - Assembly output binary file" + CR + //
+			"<listfile> - Assembly output listing file";
 
 	private final static String HEADER_TEXT = "Atari 6502 Assembler V2.0 - Assembly Date: %s";
 
