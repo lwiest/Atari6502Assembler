@@ -128,55 +128,55 @@ public class Atari6502Assembler {
 		}
 
 		/*
-		 * (                 | Start capture group 1
-		 * "                 | Match opening double quote (")
-		 * [^"]*             | Match any characters that are not a double quote ("), consumed ###
-		 * "                 | Match closing double quote (")
-		 * |                 | ..or..
-		 * '.                | Match a single quote and any character
-		 * |                 | ..or..
-		 * [^;]              | Match one character that is not a semicolon (;)
-		 * )                 | End capture group 1
-		 * *?                | Match any of those, consumed ###
-		 * ;                 | Match semicolon (;)
+		 * (                    | Start capture group 1
+		 * "                    | Match opening double quote (")
+		 * [^"]*                | Match any characters that are not a double quote ("), consumed greedily
+		 * "                    | Match closing double quote (")
+		 * |                    | ..or..
+		 * '.                   | Match a single quote and any character
+		 * |                    | ..or..
+		 * [^;]                 | Match one character that is not a semicolon (;)
+		 * )                    | End capture group 1
+		 * *?                   | Match any of those, consumed lazily
+		 * ;                    | Match semicolon (;)
 		 */
 		final static private Pattern COMMENT_PATTERN = Pattern.compile("(\"[^\"]*\"|'.|[^;])*;");
 
 		/*
-		 * ^                 | Start of string
-		 * \s*               | Match any whitespace, consumed ###
-		 * (                 | Start capture group 1
-		 * \d{1,5}           | Match 1 to 5 digits
-		 * )                 | End capture group 1
-		 * \s                | Match one whitespace
+		 * ^                    | Start of string
+		 * \s*                  | Match any whitespace, consumed greedily
+		 * (                    | Start capture group 1
+		 * \d{1,5}              | Match 1 to 5 digits
+		 * )                    | End capture group 1
+		 * \s                   | Match one whitespace
 		 */
 		final static private Pattern PATTERN_LINE_NUMBER = Pattern.compile("^\\s*(\\d{1,5})\\s");
 
 		/*
-		 * ^                 | Start of string
-		 * (                 | Start capture group 1
-		 * [A-Z@:\\?]        | Match one character that is an upper-case letter, at-sign (@), colon (:), or question mark (?)
-		 * [A-Z0-9@:\\?\\.]* | Match any characters that are an upper-case letter, digit, at-sign (@), colon (:), question mark (?), or period (.), consumed ###
-		 * )                 | End capture group 1
+		 * ^                    | Start of string
+		 * (                    | Start capture group 1
+		 * [A-Za-z@:\\?]        | Match one character that is a letter, at-sign (@), colon (:), or question mark (?)
+		 * [A-Za-z0-9@:\\?\\.]* | Match any characters that are a letter, digit, at-sign (@), colon (:), question mark (?), or period (.), consumed greedily
+		 * )                    | End capture group 1
 		 */
-		final static private Pattern PATTERN_LABEL = Pattern.compile("^([A-Z@:\\?][A-Z0-9@:\\?\\.]*)");
+		final static private Pattern PATTERN_LABEL = Pattern.compile("^([A-Za-z@:\\?][A-Za-z0-9@:\\?\\.]*)");
 
 		/*
 		 * ^                 | Start of string
-		 * \s*               | Match any whitespace, consumed ###
+		 * \s*               | Match any whitespace, consumed greedily
 		 * (                 | Start capture group 1
 		 * \*=               | Match "*="
 		 * |                 | ..or..
 		 * =                 | Match an equal sign (=)
 		 * |                 | ..or..
-		 * \.BYTE\s          | Match ".BYTE "
+		 * \.BYTE\s          | Match ".BYTE " (case-insensitive)
 		 * |                 | ..or..
-		 * \.WORD\s          | Match ".WORD "
+		 * \.WORD\s          | Match ".WORD " (case-insensitive)
 		 * |                 | ..or..
-		 * [A-Z]{1,3}        | 3 upper-case letters
+		 * [A-Z]{3}          | 3 letters  (case-insensitive)
 		 * )                 | End capture group 1
 		 */
-		final static private Pattern PATTERN_OP = Pattern.compile("^\\s+(\\*=|=|\\.BYTE\\s|\\.WORD\\s|[A-Z]{3})");
+		final static private Pattern PATTERN_OP = Pattern.compile("^\\s+(\\*=|=|\\.BYTE\\s|\\.WORD\\s|[A-Z]{3})", Pattern.CASE_INSENSITIVE);
 
 		public static LineOfCode parse(String str) {
 			LineOfCode instance = new LineOfCode();
@@ -198,12 +198,12 @@ public class Atari6502Assembler {
 			}
 
 			if (matcher.usePattern(PATTERN_LABEL).region(posStart, posEnd).find()) {
-				instance.label = matcher.group(1);
+				instance.label = matcher.group(1).toUpperCase();
 				posStart = matcher.end();
 			}
 
 			if (matcher.usePattern(PATTERN_OP).region(posStart, posEnd).find()) {
-				instance.op = matcher.group(1).trim();
+				instance.op = matcher.group(1).trim().toUpperCase();
 				posStart = matcher.end();
 			}
 
@@ -925,16 +925,17 @@ public class Atari6502Assembler {
 	}
 
 	private int getOpMode(String op, String arg) throws AssemblerException, ExpressionException {
-		if (arg.startsWith("(") && arg.endsWith(",X)")) {
+		String upperCaseArg = arg.toUpperCase();
+		if (upperCaseArg.startsWith("(") && upperCaseArg.endsWith(",X)")) {
 			return INDEXIND;
-		} else if (arg.startsWith("(") && arg.endsWith("),Y")) {
+		} else if (upperCaseArg.startsWith("(") && upperCaseArg.endsWith("),Y")) {
 			return INDINDEX;
-		} else if (arg.startsWith("(") && arg.endsWith(")")) {
+		} else if (upperCaseArg.startsWith("(") && upperCaseArg.endsWith(")")) {
 			return INDIRECT;
-		} else if (arg.endsWith(",X") || arg.endsWith(",Y")) {
+		} else if (upperCaseArg.endsWith(",X") || upperCaseArg.endsWith(",Y")) {
 			int value;
 			try {
-				int posEnd = arg.indexOf(",");
+				int posEnd = upperCaseArg.indexOf(",");
 				String strValue = arg.substring(0, posEnd);
 				value = this.evaluator.evaluate(strValue);
 			} catch (UndefinedSymbolException e) {
@@ -944,18 +945,18 @@ public class Atari6502Assembler {
 			} catch (ExpressionException e) {
 				throw e;
 			}
-			if (arg.endsWith("X")) {
+			if (upperCaseArg.endsWith("X")) {
 				boolean hasZeroPageMode = hasOpCode(op, ZEROPAGEX);
 				return (value <= 0xFF && hasZeroPageMode) ? ZEROPAGEX : ABSOLUTEX;
-			} else if (arg.endsWith("Y")) {
+			} else if (upperCaseArg.endsWith("Y")) {
 				boolean hasZeroPageMode = hasOpCode(op, ZEROPAGEY);
 				return (value <= 0xFF && hasZeroPageMode) ? ZEROPAGEY : ABSOLUTEY;
 			}
-		} else if (arg.startsWith("#")) {
+		} else if (upperCaseArg.startsWith("#")) {
 			return IMMEDIATE;
-		} else if (arg.equals("A")) {
+		} else if (upperCaseArg.equals("A")) {
 			return ACCUMULATOR;
-		} else if (arg.equals("")) {
+		} else if (upperCaseArg.equals("")) {
 			return IMPLIED;
 		} else if (op.startsWith("B") && (op.equals("BIT") == false) && (op.equals("BRK") == false)) {
 			return RELATIVE;
@@ -1114,28 +1115,29 @@ public class Atari6502Assembler {
 	private String getArgExpression(String arg, int opMode) {
 		int posStart = 0;
 		int posEnd = arg.length();
+		String upperCaseArg = arg.toUpperCase();
 
 		switch (opMode) {
 			case ZEROPAGEX:
 			case ABSOLUTEX:
 			case ZEROPAGEY:
 			case ABSOLUTEY:
-				posEnd = arg.indexOf(",");
+				posEnd = upperCaseArg.indexOf(",");
 				break;
 			case INDEXIND:
-				posStart = arg.indexOf("(") + 1;
-				posEnd = arg.indexOf(",X)");
+				posStart = upperCaseArg.indexOf("(") + 1;
+				posEnd = upperCaseArg.indexOf(",X)");
 				break;
 			case INDINDEX:
-				posStart = arg.indexOf("(") + 1;
-				posEnd = arg.indexOf("),Y");
+				posStart = upperCaseArg.indexOf("(") + 1;
+				posEnd = upperCaseArg.indexOf("),Y");
 				break;
 			case IMMEDIATE:
-				posStart = arg.indexOf("#") + 1;
+				posStart = upperCaseArg.indexOf("#") + 1;
 				break;
 			case INDIRECT:
-				posStart = arg.indexOf("(") + 1;
-				posEnd = arg.indexOf(")");
+				posStart = upperCaseArg.indexOf("(") + 1;
+				posEnd = upperCaseArg.indexOf(")");
 				break;
 		}
 		return arg.substring(posStart, posEnd);

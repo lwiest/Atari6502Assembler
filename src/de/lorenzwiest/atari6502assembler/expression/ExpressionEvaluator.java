@@ -187,18 +187,19 @@ public class ExpressionEvaluator {
 	}
 
 	/*
-	 * ^                 | Start of string
-	 * \s*?              | Match any whitespace, consumed lazily
-	 * (                 | Start capture group 1
-	 * [A-Z@\\?:]        | Match one character out of "A-Z@?:"
-	 * [A-Z0-9@\\?:]*?   | Match one character out of "A-Z0-9@?:", consumed progressively
-	 * )                 | End capture group 1
+	 * ^                  | Start of string
+	 * \s*?               | Match any whitespace, consumed lazily
+	 * (                  | Start capture group 1
+	 * [A-Za-z@\\?:]      | Match one character out of "A-Za-z@?:"
+	 * [A-Za-z0-9@\\?:]*? | Match one character out of "A-Za-z0-9@?:", consumed progressively
+	 * )                  | End capture group 1
 	 */
-	final static private Pattern SYMBOL_NAME_PATTERN = Pattern.compile("^\\s*?([A-Z@\\?:][A-Z0-9\\.@\\?:]*+)");
+	final static private Pattern SYMBOL_NAME_PATTERN = Pattern.compile("^\\s*?([A-Za-z@\\?:][A-Za-z0-9\\.@\\?:]*+)");
 
 	private Integer evaluateNumSymbol() {
 		String symbolName = findMatch(SYMBOL_NAME_PATTERN);
 		if (symbolName != null) {
+			symbolName = symbolName.toUpperCase();
 			if ((this.symbolTable != null) && this.symbolTable.contains(symbolName)) {
 				Symbol symbol = this.symbolTable.get(symbolName);
 				if (symbol.hasValue() == false) {
@@ -213,75 +214,75 @@ public class ExpressionEvaluator {
 	}
 
 	/*
-	 * ^                 | Start of string
-	 * \s*?              | Match any whitespace, consumed lazily
-	 * (                 | Start capture group 1
-	 * [0-9]{1,5}        | Match one to five decimal digits (0..9)
-	 * )                 | End capture group 1
+	 * ^                  | Start of string
+	 * \s*?               | Match any whitespace, consumed lazily
+	 * (                  | Start capture group 1
+	 * [0-9]{1,5}         | Match one to five decimal digits (0..9)
+	 * )                  | End capture group 1
 	 */
-	final static private Pattern DECIMAL_NUMBER_PATTERN = Pattern.compile("^\\s*?([0-9]{1,5})");
+	final static private Pattern DECIMAL_CONSTANT_PATTERN = Pattern.compile("^\\s*?([0-9]{1,5})");
 
 	/*
-	 * ^                 | Start of string
-	 * \s*?              | Match any whitespace, consumed lazily
-	 * (                 | Start capture group 1
-	 * $                 | Match a dollar sign ($)
-	 * [0-9A-F-a-f]{1,4} | Match one to four hexadecimal digits (0..9A..F)
-	 * )                 | End capture group 1
+	 * ^                  | Start of string
+	 * \s*?               | Match any whitespace, consumed lazily
+	 * (                  | Start capture group 1
+	 * $                  | Match a dollar sign ($)
+	 * [0-9A-F-a-f]{1,4}  | Match one to four hexadecimal digits (0..9A..F)
+	 * )                  | End capture group 1
 	 */
-	final static private Pattern HEX_NUMBER_PATTERN = Pattern.compile("^\\s*?(\\$[0-9A-Fa-f]{1,4})");
+	final static private Pattern HEX_CONSTANT_PATTERN = Pattern.compile("^\\s*?(\\$[0-9A-Fa-f]{1,4})");
 
 	/*
-	 * ^                 | Start of string
-	 * \s*?              | Match any whitespace, consumed lazily
-	 * (                 | Start capture group 1
-	 * %                 | Match a percent sign (%)
-	 * [01]{1,16}        | Match one to sixteen binary digits (0..1)
-	 * )                 | End capture group 1
+	 * ^                  | Start of string
+	 * \s*?               | Match any whitespace, consumed lazily
+	 * (                  | Start capture group 1
+	 * %                  | Match a percent sign (%)
+	 * [01]{1,16}         | Match one to sixteen binary digits (0..1)
+	 * )                  | End capture group 1
 	 */
-	final static private Pattern BINARY_NUMBER_PATTERN = Pattern.compile("^\\s*?(%[01]{1,16})");
+	final static private Pattern BINARY_CONSTANT_PATTERN = Pattern.compile("^\\s*?(%[01]{1,16})");
 
 	/*
-	 * ^                 | Start of string
-	 * \s*?              | Match any whitespace, consumed lazily
-	 * (                 | Start capture group 1
-	 * '                 | Match a single quote (')
-	 * .                 | Match one character
-	 * )                 | End capture group 1
+	 * ^                  | Start of string
+	 * \s*?               | Match any whitespace, consumed lazily
+	 * (                  | Start capture group 1
+	 * '                  | Match a single quote (')
+	 * .                  | Match one character
+	 * )                  | End capture group 1
 	 */
 	final static private Pattern CHAR_LITERAL_PATTERN = Pattern.compile("^\\s*?('.)");
 
 	private Integer evaluateNumConst() {
-		String strNumber;
+		String strNumConstant;
 		try {
-			strNumber = findMatch(DECIMAL_NUMBER_PATTERN);
-			if (strNumber != null) {
-				return new Integer(Integer.parseInt(strNumber, 10) & 0xFFFF);
+			strNumConstant = findMatch(DECIMAL_CONSTANT_PATTERN);
+			if (strNumConstant != null) {
+				return new Integer(Integer.parseInt(strNumConstant, 10) & 0xFFFF);
 			}
-			strNumber = findMatch(HEX_NUMBER_PATTERN);
-			if (strNumber != null) {
-				return new Integer(Integer.parseInt(strNumber.substring(1), 16) & 0xFFFF);
+			strNumConstant = findMatch(HEX_CONSTANT_PATTERN);
+			if (strNumConstant != null) {
+				return new Integer(Integer.parseInt(strNumConstant.substring(1), 16) & 0xFFFF);
 			}
-			strNumber = findMatch(BINARY_NUMBER_PATTERN);
-			if (strNumber != null) {
-				return new Integer(Integer.parseInt(strNumber.substring(1), 2) & 0xFFFF);
+			strNumConstant = findMatch(BINARY_CONSTANT_PATTERN);
+			if (strNumConstant != null) {
+				return new Integer(Integer.parseInt(strNumConstant.substring(1), 2) & 0xFFFF);
 			}
 		} catch (NumberFormatException e) {
 			// can never happen, parsed strings are always valid
 		}
 
-		strNumber = findMatch(CHAR_LITERAL_PATTERN);
-		if (strNumber != null) {
-			return new Integer(strNumber.charAt(1));
+		strNumConstant = findMatch(CHAR_LITERAL_PATTERN);
+		if (strNumConstant != null) {
+			return new Integer(strNumConstant.charAt(1));
 		}
 		return null;
 	}
 
 	/*
-	 * ^                 | Start of string
-	 * (                 | Start capture group 1
-	 * \s*+              | Match any whitespace, consumed possessively
-	 * )                 | End capture group 1
+	 * ^                  | Start of string
+	 * (                  | Start capture group 1
+	 * \s*+               | Match any whitespace, consumed possessively
+	 * )                  | End capture group 1
 	 */
 	final static private Pattern LEADING_WHITESPACE_PATTERN = Pattern.compile("^(\\s*+)");
 
