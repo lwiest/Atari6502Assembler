@@ -68,6 +68,12 @@ public class ParseLineOfCodeTests {
 
 		test1("   LDA #3 ", new String[]{"", "", "LDA", "#3", ""});
 		test1(" = 1", new String[]{"", "", "=", "1", ""});
+
+		test1(" .BYTE ';+$20 ; comment", new String[]{"", "", ".BYTE", "';+$20", "; comment"});
+		test1(" .BYTE ';+$20   ", new String[]{"", "", ".BYTE", "';+$20", ""});
+		test1(" .BYTE \"HEL;LO\",';+$20   ", new String[]{"", "", ".BYTE", "\"HEL;LO\",';+$20", ""});
+		test1(" .BYTE 12, '\", \"Hello;world\", ';+$20, \";\" '; ;comment", new String[]{"", "", ".BYTE", "12, '\", \"Hello;world\", ';+$20, \";\" ';", ";comment"});
+		test1(" .BYTE 12, '\", \"Hello;world\", ';+$20, \";\" '; comment", new String[]{"", "", ".BYTE", "12, '\", \"Hello;world\", ';+$20, \";\" '; comment", ""});
 	}
 
 	private void test1(String actualInput, String[] expected) {
@@ -86,8 +92,8 @@ public class ParseLineOfCodeTests {
 		test2("xxx '\" xxx ; Comment", 11);
 		test2("xxx '; xxx ; Comment", 11);
 
-		test2("xxx \"' ; Comment", 7);
-		test2("xxx \"'; Comment", 6);
+		test2("xxx \"' ; Comment", -1);
+		test2("xxx \"'; Comment", -1);
 
 		test2("xxx \"'\" ; Comment", 8);
 		test2("xxx \";\" ; Comment", 8);

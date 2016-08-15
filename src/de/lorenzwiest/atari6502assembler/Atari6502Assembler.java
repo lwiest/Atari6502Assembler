@@ -128,19 +128,20 @@ public class Atari6502Assembler {
 		}
 
 		/*
-		 * (                    | Start capture group 1
-		 * "                    | Match opening double quote (")
-		 * [^"]*                | Match any characters that are not a double quote ("), consumed greedily
-		 * "                    | Match closing double quote (")
-		 * |                    | ..or..
-		 * '.                   | Match a single quote and any character
-		 * |                    | ..or..
-		 * [^;]                 | Match one character that is not a semicolon (;)
-		 * )                    | End capture group 1
-		 * *?                   | Match any of those, consumed lazily
-		 * ;                    | Match semicolon (;)
+		 * ^                 | Start of string
+		 * (                 | Start capture group 1
+		 * "                 | Match opening double quote (")
+		 * [^"]*?            | Match any characters that are not a double quote ("), consumed lazily
+		 * "                 | Match closing double quote (")
+		 * |                 | ..or..
+		 * '.                | Match a single quote and any character
+		 * |                 | ..or..
+		 * [^'";]            | Match one character that is not a semicolon (;), single quote ('), or double-quote (")
+		 * )                 | End capture group 1
+		 * *                 | Match any of those, consumed greedily
+		 * ;                 | Match semicolon (;)
 		 */
-		final static private Pattern COMMENT_PATTERN = Pattern.compile("(\"[^\"]*\"|'.|[^;])*;");
+		final static private Pattern COMMENT_PATTERN = Pattern.compile("^(\"[^\"]*?\"|'.|[^'\";])*;");
 
 		/*
 		 * ^                    | Start of string
