@@ -1,0 +1,66 @@
+Atari 6502 Assembler V2.0 - Assembly Date: 15-Aug-2016
+
+    =0000     01 IOCB.EDTR       = $00
+    =0009     02 PUTREC          = $09
+    =00FF     03 BUFLEN          = $FF
+    =007D     04 CLS             = $7D
+    =009B     05 EOL             = $9B
+              06
+    =02E0     07 RUNAD           = $02E0
+    =0342     08 ICCOM           = $0342
+    =0344     09 ICBADR          = $0344
+    =0348     10 ICBLEN          = $0348
+    =E456     11 CIO             = $E456
+              12
+              13                 *= $600
+0600 A200     14 START           LDX #IOCB.EDTR*16
+0602 A909     15                 LDA #PUTREC
+0604 9D4203   16                 STA ICCOM,X
+0607 A91F     17                 LDA #<BUFFER
+0609 9D4403   18                 STA ICBADR,X
+060C A906     19                 LDA #>BUFFER
+060E 9D4503   20                 STA ICBADR+1,X
+0611 A9FF     21                 LDA #<BUFLEN
+0613 9D4803   22                 STA ICBLEN,X
+0616 A900     23                 LDA #>BUFLEN
+0618 9D4903   24                 STA ICBLEN+1,X
+061B 2056E4   25                 JSR CIO
+061E 60       26                 RTS
+              27
+061F 7D48454C 28 BUFFER          .BYTE CLS,"HELLO, WORLD!",EOL
+0623 4C4F2C20
+0627 574F524C
+062B 44219B  
+              29
+              30                 *= RUNAD
+02E0 0006     31                 .WORD START
+
+SYMBOLS (SORTED BY NAME): 12
+
+ 061F  BUFFER
+=00FF  BUFLEN
+=E456  CIO
+=007D  CLS
+=009B  EOL
+=0344  ICBADR
+=0348  ICBLEN
+=0342  ICCOM
+=0000  IOCB.EDTR
+=0009  PUTREC
+=02E0  RUNAD
+ 0600  START
+
+SYMBOLS (SORTED BY VALUE): 12
+
+=0000  IOCB.EDTR
+=0009  PUTREC
+=007D  CLS
+=009B  EOL
+=00FF  BUFLEN
+=02E0  RUNAD
+=0342  ICCOM
+=0344  ICBADR
+=0348  ICBLEN
+ 0600  START
+ 061F  BUFFER
+=E456  CIO
