@@ -128,30 +128,36 @@ public class Atari6502Assembler {
 		}
 
 		/*
-		 * ^                 | Start of string
-		 * (                 | Start capture group 1
-		 * "                 | Match opening double quote (")
-		 * [^"]*?            | Match any characters that are not a double quote ("), consumed lazily
-		 * "                 | Match closing double quote (")
-		 * |                 | ..or..
-		 * '.                | Match a single quote and any character
-		 * |                 | ..or..
-		 * [^'";]            | Match one character that is not a semicolon (;), single quote ('), or double-quote (")
-		 * )                 | End capture group 1
-		 * *                 | Match any of those, consumed greedily
-		 * ;                 | Match semicolon (;)
+		 * ^                    | Start of string
+		 * (                    | Start capture group 1
+		 * "                    | Match opening double quote (")
+		 * [^"]*?               | Match any characters that are not a double quote ("), consumed lazily
+		 * "                    | Match closing double quote (")
+		 * |                    | ..or..
+		 * '.                   | Match a single quote and any character
+		 * |                    | ..or..
+		 * [^'";]               | Match one character that is not a semicolon (;), single quote ('), or double-quote (")
+		 * )                    | End capture group 1
+		 * *                    | Match any of those, consumed greedily
+		 * ;                    | Match semicolon (;)
 		 */
 		final static private Pattern COMMENT_PATTERN = Pattern.compile("^(\"[^\"]*?\"|'.|[^'\";])*;");
 
 		/*
 		 * ^                    | Start of string
 		 * \s*                  | Match any whitespace, consumed greedily
+		 * (?:                  | Start unnamed capture group
 		 * (                    | Start capture group 1
 		 * \d{1,5}              | Match 1 to 5 digits
 		 * )                    | End capture group 1
+		 * (?:                  | Start unnamed capture group
 		 * \s                   | Match one whitespace
+		 * |                    | ..or..
+		 * $                    | Match end of string
+		 * )                    | End unnamed capture group
+		 * )                    | End unnamed capture group
 		 */
-		final static private Pattern PATTERN_LINE_NUMBER = Pattern.compile("^\\s*(\\d{1,5})\\s");
+		final static private Pattern PATTERN_LINE_NUMBER = Pattern.compile("^\\s*(?:(\\d{1,5})(?:\\s|$))");
 
 		/*
 		 * ^                    | Start of string

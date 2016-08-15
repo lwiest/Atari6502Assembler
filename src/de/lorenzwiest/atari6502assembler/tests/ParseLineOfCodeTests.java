@@ -74,6 +74,8 @@ public class ParseLineOfCodeTests {
 		test1(" .BYTE \"HEL;LO\",';+$20   ", new String[]{"", "", ".BYTE", "\"HEL;LO\",';+$20", ""});
 		test1(" .BYTE 12, '\", \"Hello;world\", ';+$20, \";\" '; ;comment", new String[]{"", "", ".BYTE", "12, '\", \"Hello;world\", ';+$20, \";\" ';", ";comment"});
 		test1(" .BYTE 12, '\", \"Hello;world\", ';+$20, \";\" '; comment", new String[]{"", "", ".BYTE", "12, '\", \"Hello;world\", ';+$20, \";\" '; comment", ""});
+
+		test1("100", new String[]{"100", "", "", "", ""});
 	}
 
 	private void test1(String actualInput, String[] expected) {
