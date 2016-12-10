@@ -226,7 +226,7 @@ public class Atari6502Assembler {
 	private static final String CR = System.getProperty("line.separator");
 
 	private final static String VERSION_CREATED_DATE = "20-Dec-2001";
-	private final static String VERSION_LAST_CHANGE_DATE = "14-Aug-2016";
+	private final static String VERSION_LAST_CHANGE_DATE = "10-Dec-2016";
 
 	private final static String HELP_TEXT =
 			"   _  _            _    __ ___  __ ___     _                     _    _" + CR + //
@@ -242,6 +242,7 @@ public class Atari6502Assembler {
 			"  -showHeader=true|false      | If true then print assembly header {true}" + CR + //
 			"  -showObject=true|false      | If true then print object addresses and bytes {true}" + CR + //
 			"  -showLineNumbers=true|false | If true then print line numbers {true}" + CR + //
+			"  -showSymbolList=true|false  | If true then print symbol list {true}" + CR + //
 			"  -lineNumberStart=<n>        | Set start line number {1}" + CR + //
 			"  -lineNumberInc=<n>          | Set line number increment {1}" + CR + //
 			"  -padLineNumbers=true|false  | If true then pad line numbers with \"0\" {true}" + CR + //
@@ -260,6 +261,7 @@ public class Atari6502Assembler {
 	private boolean optShowHeader = true;
 	private boolean optShowObject = true;
 	private boolean optShowLineNumbers = true;
+	private boolean optShowSymbolList = true;
 	private int optLineNumberStart = 1;
 	private int optLineNumberInc = 1;
 	private boolean optPadLineNumbers = true;
@@ -285,6 +287,7 @@ public class Atari6502Assembler {
 		final String OPT_SHOW_HEADER = "-showHeader=";
 		final String OPT_SHOW_OBJECT = "-showObject=";
 		final String OPT_SHOW_LINE_NUMBERS = "-showLineNumbers=";
+		final String OPT_SHOW_SYMBOL_LIST = "-showSymbolList=";
 		final String OPT_LINE_NUMBER_START = "-lineNumberStart=";
 		final String OPT_LINE_NUMBER_INC = "-lineNumberInc=";
 		final String OPT_PAD_LINE_NUMBERS = "-padLineNumbers=";
@@ -343,6 +346,14 @@ public class Atari6502Assembler {
 					this.optShowLineNumbers = Boolean.parseBoolean(strValue);
 				} else {
 					System.out.println("Option " + OPT_SHOW_LINE_NUMBERS + " has invalid value \""+ strValue + "\". Valid values are \"true\" or \"false\".");
+					return PARSE_ARGS_ERROR;
+				}
+			} else if (arg.startsWith(OPT_SHOW_SYMBOL_LIST)) {
+				String strValue = arg.substring(OPT_SHOW_SYMBOL_LIST.length());
+				if (strValue.toLowerCase().equals("true") || strValue.toLowerCase().equals("false")) {
+					this.optShowSymbolList = Boolean.parseBoolean(strValue);
+				} else {
+					System.out.println("Option " + OPT_SHOW_SYMBOL_LIST + " has invalid value \""+ strValue + "\". Valid values are \"true\" or \"false\".");
 					return PARSE_ARGS_ERROR;
 				}
 			} else if (arg.startsWith(OPT_LINE_NUMBER_START)) {
@@ -774,31 +785,33 @@ public class Atari6502Assembler {
 	}
 
 	private void printSymbols() {
-		int numSymbols = 0;
-		for (String symbolName : this.symbolTable.keys()) {
-			if (Symbol.isLocalSymbolName(symbolName) == false) {
-				numSymbols++;
+		if (this.optShowSymbolList) {
+			int numSymbols = 0;
+			for (String symbolName : this.symbolTable.keys()) {
+				if (Symbol.isLocalSymbolName(symbolName) == false) {
+					numSymbols++;
+				}
 			}
-		}
 
-		System.out.println();
-		System.out.println(String.format("SYMBOLS (SORTED BY NAME): %d", numSymbols));
-		System.out.println();
+			System.out.println();
+			System.out.println(String.format("SYMBOLS (SORTED BY NAME): %d", numSymbols));
+			System.out.println();
 
-		for (String symbolName : this.symbolTable.keys()) {
-			if (Symbol.isLocalSymbolName(symbolName) == false) {
-				System.out.println(formatSymbol(symbolName));
+			for (String symbolName : this.symbolTable.keys()) {
+				if (Symbol.isLocalSymbolName(symbolName) == false) {
+					System.out.println(formatSymbol(symbolName));
+				}
 			}
-		}
 
-		System.out.println();
-		System.out.println(String.format("SYMBOLS (SORTED BY VALUE): %d", numSymbols));
-		System.out.println();
+			System.out.println();
+			System.out.println(String.format("SYMBOLS (SORTED BY VALUE): %d", numSymbols));
+			System.out.println();
 
-		for (Symbol symbol : this.symbolTable.symbolsSortedByValue()) {
-			String symbolName = symbol.getName();
-			if (Symbol.isLocalSymbolName(symbolName) == false) {
-				System.out.println(formatSymbol(symbolName));
+			for (Symbol symbol : this.symbolTable.symbolsSortedByValue()) {
+				String symbolName = symbol.getName();
+				if (Symbol.isLocalSymbolName(symbolName) == false) {
+					System.out.println(formatSymbol(symbolName));
+				}
 			}
 		}
 	}

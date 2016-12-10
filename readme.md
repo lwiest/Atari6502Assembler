@@ -30,7 +30,7 @@ Download the project ZIP-file from GitHub and unzip it to a temporary folder ("r
  / _ \  _/ _` | '_| | / _ \__ \ () / /   / _ \ (_-<_-</ -_) '  \| '_ \ | -_) '_|
 /_/ \_\__\__,_|_| |_| \___/___/\__/___| /_/ \_\/__/__/\___|_|_|_|_.__/_|___|_|
 
-Atari 6502 Assembler V2.0 (C) by Lorenz Wiest, created: 20-Dec-2001, last change: 01-Aug-2016
+Atari 6502 Assembler V2.0 (C) by Lorenz Wiest, created: 20-Dec-2001, last change: 10-Dec-2016
 
 Usage: java Atari6502Assembler [<options>] <infile> [<outfile>] [> <listfile>]
 
@@ -38,6 +38,7 @@ Usage: java Atari6502Assembler [<options>] <infile> [<outfile>] [> <listfile>]
   -showHeader=true|false      | If true then print header line {true}
   -showObject=true|false      | If true then print object code {true}
   -showLineNumbers=true|false | If true then print line numbers {true}
+  -showSymbolList=true|false  | If true then print symbol list {true}
   -lineNumberStart=<n>        | Set start line number {1}
   -lineNumberInc=<n>          | Set line number increment {1}
   -padLineNumbers=true|false  | If true then pad line numbers with "0" else with " " {true}
@@ -64,6 +65,7 @@ Option       | Values               | Description
 `showHeader` | `true`,&nbsp;`false` | If `true` then print a header line (containing the date of the assembly) at the start of the assembly output listing (default: `true`).
 `showObject` | `true`,&nbsp;`false` | If `true` then print the bytes of the object code, including the corresponding memory addresses, at the start of each line of the assembly output listing (default: `true`).
 `showLineNumbers` | `true`,&nbsp;`false` | If `true` then number the lines of the assembly language source code in the assembly output listing (default: `true`). See also `lineNumberStart`, `lineNumberInc`, and `padLineNumbers`.
+`showSymbolList` | `true`,&nbsp;`false` | If `true` then print the symbol list at the end of the assembly output listing (default: `true`).
 `lineNumberStart` | \<n\> | Sets the first line number of the assembly language source code. The number \<n\> is a positive integer (default: `1`). See also `showLineNumbers`.
 `lineNumberInc` | \<n\> | Sets the line number increment for each line of the assembly language source code. The number \<n\> is a positive integer (default: `1`). See also `showLineNumbers`.
 `padLineNumbers` | `true`,&nbsp;`false` | If `true` then pad the line numbers with `0`, if `false` then pad the line numbers with " " (default: `true`). See also `showLineNumbers`.
