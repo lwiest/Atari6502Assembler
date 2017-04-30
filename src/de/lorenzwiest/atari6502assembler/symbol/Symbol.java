@@ -39,7 +39,7 @@ public class Symbol {
 
 	public static boolean isLocalSymbolName(String name) {
 		char firstChar = name.charAt(0);
-		return firstChar == '?' || firstChar == ':';
+		return (firstChar == '?') || (firstChar == ':');
 	}
 
 	private Symbol(String name, int value, boolean hasValue, SymbolType type) {

@@ -417,7 +417,7 @@ public class Atari6502Assembler {
 			return PARSE_ARGS_ERROR;
 		}
 		this.inFilename = args[inFilenameArgIndex];
-		this.outFilename = (args.length > inFilenameArgIndex + 1) ? args[inFilenameArgIndex + 1] : null;
+		this.outFilename = (args.length > (inFilenameArgIndex + 1)) ? args[inFilenameArgIndex + 1] : null;
 		return PARSE_ARGS_OK;
 	}
 
@@ -499,7 +499,7 @@ public class Atari6502Assembler {
 				String arg = parsedLine.getArg();
 				boolean lineHasLabel = label.length() > 0;
 
-				if (op.isEmpty() && arg.length() > 0) {
+				if (op.isEmpty() && (arg.length() > 0)) {
 					throw new SyntaxErrorException();
 				}
 
@@ -641,7 +641,7 @@ public class Atari6502Assembler {
 				boolean isFirstLine = true;
 
 				for (int posNybbles = 0; posNybbles < numNybbles; posNybbles += nybblesChunk.length()) {
-					if (posNybbles + NYBBLES_PER_LINE < numNybbles) {
+					if ((posNybbles + NYBBLES_PER_LINE) < numNybbles) {
 						nybblesChunk = strBytes.substring(posNybbles, posNybbles + NYBBLES_PER_LINE);
 					} else {
 						nybblesChunk = strBytes.substring(posNybbles);
@@ -760,7 +760,7 @@ public class Atari6502Assembler {
 			int segLength = segment.getBytes().length;
 			if (segLength > 0) {
 				int segStart = segment.getStartAddress();
-				int segEnd = segStart + segLength - 1;
+				int segEnd = (segStart + segLength) - 1;
 
 				writeWord(out, segStart);
 				writeWord(out, segEnd);
@@ -967,10 +967,10 @@ public class Atari6502Assembler {
 			}
 			if (upperCaseArg.endsWith("X")) {
 				boolean hasZeroPageMode = hasOpCode(op, ZEROPAGEX);
-				return (value <= 0xFF && hasZeroPageMode) ? ZEROPAGEX : ABSOLUTEX;
+				return ((value <= 0xFF) && hasZeroPageMode) ? ZEROPAGEX : ABSOLUTEX;
 			} else if (upperCaseArg.endsWith("Y")) {
 				boolean hasZeroPageMode = hasOpCode(op, ZEROPAGEY);
-				return (value <= 0xFF && hasZeroPageMode) ? ZEROPAGEY : ABSOLUTEY;
+				return ((value <= 0xFF) && hasZeroPageMode) ? ZEROPAGEY : ABSOLUTEY;
 			}
 		} else if (upperCaseArg.startsWith("#")) {
 			return IMMEDIATE;
@@ -992,7 +992,7 @@ public class Atari6502Assembler {
 				throw e;
 			}
 			boolean hasZeroPageMode = hasOpCode(op, ZEROPAGE);
-			return (value <= 0xFF && hasZeroPageMode) ? ZEROPAGE : ABSOLUTE;
+			return ((value <= 0xFF) && hasZeroPageMode) ? ZEROPAGE : ABSOLUTE;
 		}
 		return UNKNOWN;
 	}
@@ -1113,7 +1113,7 @@ public class Atari6502Assembler {
 				case RELATIVE:
 					value = this.evaluator.evaluate(arg);
 					int relAddress = value - (pc + 2);
-					if (relAddress > 127 || relAddress < -128) {
+					if ((relAddress > 127) || (relAddress < -128)) {
 						throw new BranchRangeException(relAddress);
 					}
 					writeByte(out, relAddress);
