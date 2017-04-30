@@ -827,7 +827,7 @@ public class Atari6502Assembler {
 		return isSymbol + hexValue + " " + isReferenced + symbolName;
 	}
 
-	private static final int UNKNOWN = 0;
+	private static final int UNKNOWN = -1;
 	private static final int IMPLIED = 1;
 	private static final int ACCUMULATOR = 2;
 	private static final int ABSOLUTE = 3;
