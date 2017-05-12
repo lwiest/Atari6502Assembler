@@ -1,6 +1,6 @@
 # Atari 6502 Assembler
 
-An open-source 6502 assembler for the Atari 8-bit Home Computer System, written in Java
+Atari 6502 Assembler is an open-source 6502 assembler for the Atari 8-bit Home Computer System, written in Java.
 
 I wrote this program mainly to assemble my [reverse-engineered, complete, and fully documented assembly language source code of STAR RAIDERS](https://github.com/lwiest/StarRaiders).
 
@@ -14,14 +14,18 @@ Enjoy! -- Lorenz
 
 **Prerequisites:** You have Java SDK 5 (or higher) installed on your system.
 
-Download the project ZIP-file from GitHub and unzip it to a temporary folder ("root" folder).
+Download the project ZIP file from GitHub and unzip it to a temporary folder ("root" folder).
 
 **To work with the Atari 6502 Assembler source code in your Eclipse IDE**, import the `Atari6502Assembler` project in your Eclipse IDE from the root folder, choosing as import source _General > Existing Projects into Workspace_.
 
-**To compile Atari 6502 Assembler into a convenient JAR-file**, open a command prompt in the root folder and enter (Windows only, `%JAVA_HOME%` must point to the installation folder of your Java SDK):
+**To compile Atari 6502 Assembler into a convenient JAR file**, open a command prompt in the root folder and enter (Windows only, `%JAVA_HOME%` must point to the installation folder of your Java SDK):
 ```
 > makejar
 ```
+This produces the `Atari6502Assembler.jar` file.
+
+**Tip:** I added the `Atari6502Assembler.jar` file to this GitHub repository.
+
 **To run Atari 6502 Assembler and get command-line options**, enter
 ```
 > java -jar Atari6502Assembler.jar
@@ -56,7 +60,7 @@ Argument     | Description
 :------------|:-----------
 `<infile>`   | The 6502 assembly language source code file
 `<outfile>`  | The assembly output binary file (object file)
-`<listfile>` | The assembly output listing. Its content and format can be customized with several command-line options. If this argument is omitted, then the assembly output listing is printed to the console. 
+`<listfile>` | The assembly output listing file. Its content and format can be customized with several command-line options. If this argument is omitted, then the assembly output listing is printed to the console. 
 
 ## Command-Line Options
 
@@ -66,12 +70,12 @@ Option       | Values               | Description
 `showObject` | `true`,&nbsp;`false` | If `true` then print the bytes of the object code, including the corresponding memory addresses, at the start of each line of the assembly output listing (default: `true`).
 `showLineNumbers` | `true`,&nbsp;`false` | If `true` then number the lines of the assembly language source code in the assembly output listing (default: `true`). See also `lineNumberStart`, `lineNumberInc`, and `padLineNumbers`.
 `showSymbolList` | `true`,&nbsp;`false` | If `true` then print the symbol list at the end of the assembly output listing (default: `true`).
-`lineNumberStart` | \<n\> | Sets the first line number of the assembly language source code. The number \<n\> is a positive integer (default: `1`). See also `showLineNumbers`.
-`lineNumberInc` | \<n\> | Sets the line number increment for each line of the assembly language source code. The number \<n\> is a positive integer (default: `1`). See also `showLineNumbers`.
+`lineNumberStart` | `0`, `1`, `2`, ... | Sets the first line number of the assembly language source code. This number is a positive integer (default: `1`). See also `showLineNumbers`.
+`lineNumberInc` | `1`, `2`, `3`, ... | Sets the line number increment for each line of the assembly language source code. This number is a positive integer (default: `1`). See also `showLineNumbers`.
 `padLineNumbers` | `true`,&nbsp;`false` | If `true` then pad the line numbers with `0`, if `false` then pad the line numbers with " " (default: `true`). See also `showLineNumbers`.
-`instructionPos` | \<n\> | Sets the column number at which instructions are printed in the assembly output listing. The column number \<n\> is a positive integer. Column number 0 is the column of the first label character (default: `16`).
-`labelExprPos` | \<n\> | Sets the column number at which label expressions are printed in the assembly output listing. The column number \<n\> is a positive integer. Column number 0 is the column of the first label character (default: `16`).
-`commentPos` | \<n\> | Sets the column number at which comments are printed in the assembly output listing. The column number \<n\> is a positive integer. If the column number \<n\> is 0, then this option is ignored and comments are not rearranged in the assembly output listing. Comments at column number 0 are never rearranged in the assembly output listing. Column number 0 is the column of the first label character (default: `0`).
+`instructionPos` | `0`, `1`, `2`, ... | Sets the column number at which instructions are printed in the assembly output listing. This number is a positive integer. Column number 0 is the column of the first label character (default: `16`).
+`labelExprPos` | `0`, `1`, `2`, ... | Sets the column number at which label expressions are printed in the assembly output listing. This number is a positive integer. Column number 0 is the column of the first label character (default: `16`).
+`commentPos` | `0`, `1`, `2`, ... | Sets the column number at which comments are printed in the assembly output listing. This number is a positive integer. If this number is 0, then this option is ignored and comments are not rearranged in the assembly output listing. Comments at column number 0 are never rearranged in the assembly output listing. Column number 0 is the column of the first label character (default: `0`).
 
 ## Assemble a Hello World Sample
 
@@ -193,7 +197,11 @@ You can run the object code with your Atari 8-bit Home Computer System emulator 
 
 ## Samples
 
-Folder [samples](samples) contains some sample 6502 assembly language programs that I wrote for the Atari 8-bit Home Computer System. Find for each sample the following files: source code (\*.ASM), assembly output listing (\*.LST), object file (\*.EXE), and screenshot (\*.GIF):
+The folder [samples](samples) contains some sample 6502 assembly language programs that I wrote for the Atari 8-bit Home Computer System. Find for each sample the following files:
+* Source code file (\*.ASM)
+* Assembly output listing file (\*.LST)
+* Object file (\*.EXE)
+* Screenshot (\*.GIF):
 
 ### HELLOWORLD
 
@@ -205,7 +213,7 @@ Prints the message "HELLO, WORLD!" to the screen.
 
 ![Screenshot ACTIVISION.EXE](samples/ACTIVISION.GIF "Screenshot ACTIVISION.EXE")
 
-Recreates the scrolling bottom banner of Activision games after I had explored how the rainbow logo was implemented.
+Recreates the scrolling bottom banner of Activision games.
 
 ### ALCYLON
 
@@ -257,7 +265,7 @@ All elements may be separated by an arbitrary number of whitespace characters â€
 
 **\<label\>** 	- A label starts with a letter `A`..`Z` or `a`..`z`, an at-sign (`@`), a question mark (`?`), or a colon (`:`). The remaining characters may be letters `A`..`Z` or `a`..`z`, digits `0`..`9`, an at-sign (`@`), a question mark (`?`), a colon (`:`), or a period (`.`).
 
-When a label starts with a question mark or a colon, then it is not included in the symbol table that is printed at the end of the assembly output listing.
+When a label starts with a question mark (`?`) or a colon (`:`), then it is not included in the symbol table that is printed at the end of the assembly output listing.
 
 Labels are case-insensitive, for example, label `START` is the same as label `start`.
 
@@ -305,11 +313,11 @@ An expression is a combination of arguments and operators. It is evaluated to a 
 Operator | Description                       | Example       | Result
 :-------:|:----------------------------------|:--------------|:------
 `+`      | Addition                          | `40+20`       | 60
-         |                                   | `$F000+$2000` | $1000 (4096)
+&nbsp;   | &nbsp;                            | `$F000+$2000` | $1000 (4096)
 `-`      | Subtraction                       | `40-20`       | 20
 `*`      | Multiplication                    | `2*3`         | 6
 `/`      | Division                          | `12/2`        | 6
-         |                                   | `12/5`        | 2
+&nbsp;   | &nbsp;                            | `12/5`        | 2
 `-`      | Minus (unary)                     | `-1`          | 65535 ($FFFF)
 `&`      | Binary AND                        | `$03&$01`     | $0001 (1)
 `!`      | Binary OR                         | `$02!$01`     | $0003 (3)
