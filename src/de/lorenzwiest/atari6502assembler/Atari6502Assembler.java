@@ -226,7 +226,7 @@ public class Atari6502Assembler {
 	private static final String CR = System.getProperty("line.separator");
 
 	private final static String VERSION_CREATED_DATE = "20-Dec-2001";
-	private final static String VERSION_LAST_CHANGE_DATE = "10-Dec-2016";
+	private final static String VERSION_LAST_CHANGE_DATE = "30-Apr-2017";
 
 	private final static String HELP_TEXT =
 			"   _  _            _    __ ___  __ ___     _                     _    _" + CR + //

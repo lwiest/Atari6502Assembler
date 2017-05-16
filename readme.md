@@ -34,7 +34,7 @@ This produces the `Atari6502Assembler.jar` file.
  / _ \  _/ _` | '_| | / _ \__ \ () / /   / _ \ (_-<_-</ -_) '  \| '_ \ | -_) '_|
 /_/ \_\__\__,_|_| |_| \___/___/\__/___| /_/ \_\/__/__/\___|_|_|_|_.__/_|___|_|
 
-Atari 6502 Assembler V2.0 (C) by Lorenz Wiest, created: 20-Dec-2001, last change: 10-Dec-2016
+Atari 6502 Assembler V2.0 (C) by Lorenz Wiest, created: 20-Dec-2001, last change: 30-Apr-2017
 
 Usage: java Atari6502Assembler [<options>] <infile> [<outfile>] [> <listfile>]
 
