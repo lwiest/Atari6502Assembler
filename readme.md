@@ -10,6 +10,15 @@ The Atari 6502 Assembler source code is available under the MIT license.
 
 Enjoy! -- Lorenz
 
+## Table of Contents
+
+* [Getting Started](https://github.com/lwiest/Atari6502Assembler#getting-started)
+* [Command-Line Arguments](https://github.com/lwiest/Atari6502Assembler#command-line-arguments)
+* [Command-Line Options](https://github.com/lwiest/Atari6502Assembler#command-line-options)
+* [Assemble a Hello World Sample](https://github.com/lwiest/Atari6502Assembler#assemble-a-hello-world-sample)
+* [Samples](https://github.com/lwiest/Atari6502Assembler#samples)
+* [Documentation](https://github.com/lwiest/Atari6502Assembler#documentation)
+
 ## Getting Started
 
 **Prerequisites:** You have Java SDK 5 (or higher) installed on your system.
