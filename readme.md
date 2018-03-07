@@ -10,6 +10,15 @@ The Atari 6502 Assembler source code is available under the MIT license.
 
 Enjoy! -- Lorenz
 
+## Table of Contents
+
+* [Getting Started](#getting-started)
+* [Command-Line Arguments](#command-line-arguments)
+* [Command-Line Options](#command-line-options)
+* [Assemble a Hello World Sample](#assemble-a-hello-world-sample)
+* [Samples](#samples)
+* [Documentation](#documentation)
+
 ## Getting Started
 
 **Prerequisites:** You have Java SDK 5 (or higher) installed on your system.
