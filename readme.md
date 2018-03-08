@@ -26,12 +26,12 @@ I have prepared a runnable JAR file for you.
 
 **Prerequisites:**
 
-o You have Java SDK 5 (or higher) installed on your system.
+* You have Java SDK 5 (or higher) installed on your system.
 
 1. Download this project's ZIP file from GitHub.
 2. Extract the file `Atari6502Assembler.jar` from the ZIP file to a folder.
 3. Open a command prompt in this folder.
-4. Enter `java -jar Atari6502Assembler`. _(This runs Atari 6502 Assembler and lists command-line options.)//
+4. Enter `java -jar Atari6502Assembler`. _(This runs Atari 6502 Assembler and lists command-line options.)_
    
 ## Getting Started
 
