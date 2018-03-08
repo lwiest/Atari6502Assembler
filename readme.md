@@ -12,6 +12,7 @@ Enjoy! -- Lorenz
 
 ## Table of Contents
 
+* [Quick Start](#quick-start)
 * [Getting Started](#getting-started)
 * [Command-Line Arguments](#command-line-arguments)
 * [Command-Line Options](#command-line-options)
@@ -19,21 +20,32 @@ Enjoy! -- Lorenz
 * [Samples](#samples)
 * [Documentation](#documentation)
 
+## Quick Start
+
+I have prepared a runnable JAR file for you.
+
+**Prerequisites:**
+
+o You have Java SDK 5 (or higher) installed on your system.
+
+1. Download this project's ZIP file from GitHub.
+2. Extract the file `Atari6502Assembler.jar` from the ZIP file to a folder.
+3. Open a command prompt in this folder.
+4. Enter `java -jar Atari6502Assembler`. _(This runs Atari 6502 Assembler and lists command-line options.)//
+   
 ## Getting Started
 
 **Prerequisites:** You have Java SDK 5 (or higher) installed on your system.
 
-Download the project ZIP file from GitHub and unzip it to a temporary folder ("root" folder).
+Download this project's ZIP file from GitHub and unzip it to a temporary folder ("root" folder).
 
 **To work with the Atari 6502 Assembler source code in your Eclipse IDE**, import the `Atari6502Assembler` project in your Eclipse IDE from the root folder, choosing as import source _General > Existing Projects into Workspace_.
 
-**To compile Atari 6502 Assembler into a convenient JAR file**, open a command prompt in the root folder and enter (Windows only, `%JAVA_HOME%` must point to the installation folder of your Java SDK):
+**To compile Atari 6502 Assembler into a convenient JAR file** (Windows only), open a command prompt in the root folder and enter (`%JAVA_HOME%` must point to the installation folder of your Java SDK):
 ```
 > makejar
 ```
 This produces the `Atari6502Assembler.jar` file.
-
-**Tip:** I added the `Atari6502Assembler.jar` file to this GitHub repository.
 
 **To run Atari 6502 Assembler and get command-line options**, enter
 ```
@@ -43,7 +55,7 @@ This produces the `Atari6502Assembler.jar` file.
  / _ \  _/ _` | '_| | / _ \__ \ () / /   / _ \ (_-<_-</ -_) '  \| '_ \ | -_) '_|
 /_/ \_\__\__,_|_| |_| \___/___/\__/___| /_/ \_\/__/__/\___|_|_|_|_.__/_|___|_|
 
-Atari 6502 Assembler V2.0 (C) by Lorenz Wiest, created: 20-Dec-2001, last change: 30-Jun-2017
+Version 2.0 (08-MAR-2018) by Lorenz Wiest
 
 Usage: java Atari6502Assembler [<options>] <infile> [<outfile>] [> <listfile>]
 
@@ -128,7 +140,7 @@ enter
 ```
 Atari 6502 Assembler prints the following assembly output listing to the console:
 ```
-Atari 6502 Assembler V2.0 - Assembly Date: 14-Aug-2016
+Atari 6502 Assembler - Assembly Date: 14-Aug-2016
 
     =0000     01 IOCB.EDTR       = $00
     =0009     02 PUTREC          = $09
