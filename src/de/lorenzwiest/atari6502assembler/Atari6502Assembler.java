@@ -220,16 +220,13 @@ public class Atari6502Assembler {
 
 	private static final String CR = System.getProperty("line.separator");
 
-	private final static String VERSION_CREATED_DATE = "20-Dec-2001";
-	private final static String VERSION_LAST_CHANGE_DATE = "30-Jun-2017";
-
 	private final static String HELP_TEXT =
 			"   _  _            _    __ ___  __ ___     _                     _    _" + CR + //
 			"  /_\\| |_ __ _ _ _(_)  / /| __|/  \\_  )   /_\\   ______ ___ _ __ | |__| |___ _ _" + CR + //
 			" / _ \\  _/ _` | '_| | / _ \\__ \\ () / /   / _ \\ (_-<_-</ -_) '  \\| '_ \\ | -_) '_|" + CR + //
 			"/_/ \\_\\__\\__,_|_| |_| \\___/___/\\__/___| /_/ \\_\\/__/__/\\___|_|_|_|_.__/_|___|_|" + CR + //
 			CR + //
-			"Atari 6502 Assembler V2.0 (C) by Lorenz Wiest, created: %s, last change: %s" + CR + //
+			"Version 2.0 (30-JUN-2017) by Lorenz Wiest" + CR + //
 			CR + //
 			"Usage: java Atari6502Assembler [<options>] <infile> [<outfile>] [> <listfile>]" + CR + //
 			CR + //
@@ -248,7 +245,7 @@ public class Atari6502Assembler {
 			"<outfile>  - Assembly output binary file" + CR + //
 			"<listfile> - Assembly output listing file";
 
-	private final static String HEADER_TEXT = "Atari 6502 Assembler V2.0 - Assembly Date: %s";
+	private final static String HEADER_TEXT = "Atari 6502 Assembler - Assembly Date: %s";
 
 	private SymbolTable symbolTable = new SymbolTable();
 	private ExpressionEvaluator evaluator = new ExpressionEvaluator(this.symbolTable);
@@ -291,7 +288,7 @@ public class Atari6502Assembler {
 		final String OPT_COMMENT_POS = "-commentPos=";
 
 		if (args.length == 0) {
-			System.out.println(String.format(HELP_TEXT, VERSION_CREATED_DATE, VERSION_LAST_CHANGE_DATE));
+			System.out.println(HELP_TEXT);
 			return PARSE_ARGS_ERROR;
 		}
 
