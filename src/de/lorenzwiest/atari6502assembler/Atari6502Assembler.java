@@ -226,7 +226,7 @@ public class Atari6502Assembler {
 			" / _ \\  _/ _` | '_| | / _ \\__ \\ () / /   / _ \\ (_-<_-</ -_) '  \\| '_ \\ | -_) '_|" + CR + //
 			"/_/ \\_\\__\\__,_|_| |_| \\___/___/\\__/___| /_/ \\_\\/__/__/\\___|_|_|_|_.__/_|___|_|" + CR + //
 			CR + //
-			"Version 2.0 (30-JUN-2017) by Lorenz Wiest" + CR + //
+			"Version 2.0 (08-MAR-2018) by Lorenz Wiest" + CR + //
 			CR + //
 			"Usage: java Atari6502Assembler [<options>] <infile> [<outfile>] [> <listfile>]" + CR + //
 			CR + //
