@@ -24,9 +24,7 @@ Enjoy! -- Lorenz
 
 I have prepared a runnable JAR file for you.
 
-**Prerequisites:**
-
-* You have Java SDK 5 (or higher) installed on your system.
+**Prerequisites:** You have Java SDK 5 (or higher) installed on your system.
 
 1. Download this project's ZIP file from GitHub.
 2. Extract the file `Atari6502Assembler.jar` from the ZIP file to a folder.
