@@ -121,7 +121,7 @@ BUFFER    .BYTE CLS,"HELLO, WORLD!",EOL
 ```
 enter
 ```
-> java -jar Atari6502Assembler samples/HELLOWORLD.ASM HELLOWORLD.EXE
+java -jar Atari6502Assembler samples/HELLOWORLD/HELLOWORLD.ASM HELLOWORLD.EXE
 ```
 Atari 6502 Assembler prints the following assembly output listing to the console:
 ```
@@ -217,13 +217,13 @@ Prints the message "HELLO, WORLD!" to the screen.
 
 ### ACTIVISION
 
-![Screenshot ACTIVISION.EXE](samples/HELLOWORLD/ACTIVISION.GIF "Screenshot ACTIVISION.EXE")
+![Screenshot ACTIVISION.EXE](samples/ACTIVISION/ACTIVISION.GIF "Screenshot ACTIVISION.EXE")
 
 Recreates the scrolling bottom banner of Activision games.
 
 ### ALCYLON
 
-![Screenshot ALCYLON.EXE](samples/HELLOWORLD/ALCYLON.GIF "Screenshot ALCYLON.EXE")
+![Screenshot ALCYLON.EXE](samples/ALCYLON/ALCYLON.GIF "Screenshot ALCYLON.EXE")
 
 The intro of a vertically scrolling spaceship game I wrote in 1987 (the intro, not the game ;-). After the intro has finished you can move the spaceship left and right with the joystick and fire photon torpedoes with the joystick button. I refactored and polished the old source code and re-assembled it with Atari 6502 Assembler (It's nice to write assembly language source code in lines of more than 40 characters :-).
 
@@ -386,6 +386,6 @@ Download this project's ZIP file from GitHub and unzip it to a temporary folder 
 
 **To compile Atari 6502 Assembler into a convenient JAR file** (Windows only), open a command prompt in the root folder and enter (`%JAVA_HOME%` must point to the installation folder of your Java SDK):
 ```
-> makejar
+makejar
 ```
 This produces the `Atari6502Assembler.jar` file.
