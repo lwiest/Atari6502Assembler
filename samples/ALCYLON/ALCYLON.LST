@@ -1,0 +1,1513 @@
+Atari 6502 Assembler V2.0 - Assembly Date: 15-Aug-2016
+
+              001 ; **********************************************************
+              002 ; *                                                        *
+              003 ; *                     ALYCLON Intro                      *
+              004 ; *                                                        *
+              005 ; *            Created by Lorenz Wiest MAY 1987            *
+              006 ; *                                                        *
+              007 ; **********************************************************
+              008
+              009 ; LDA #A
+              010 ; CMP #B
+              011 ; A >= B -> CS
+              012 ; A <  B -> CC
+              013
+    =0200     014 VDSLST          = $0200
+    =022F     015 SDMCTL          = $022F
+    =0230     016 SDLSTL          = $0230
+    =026F     017 GPRIOR          = $026F
+    =0278     018 STICK0          = $0278
+    =0284     019 STRIG0          = $0284
+    =02C0     020 PCOLR0          = $02C0
+    =02C1     021 PCOLR1          = $02C1
+    =02C2     022 PCOLR2          = $02C2
+    =02C7     023 COLOR3          = $02C7
+    =02F4     024 CHRBAS          = $02F4
+              025
+    =D000     026 HPOSP0          = $D000                           ; GTIA hardware registers
+    =D001     027 HPOSP1          = $D001
+    =D002     028 HPOSP2          = $D002
+    =D004     029 HPOSM0          = $D004
+    =D005     030 HPOSM1          = $D005
+    =D006     031 HPOSM2          = $D006
+    =D007     032 HPOSM3          = $D007
+    =D012     033 COLPM0          = $D012
+    =D013     034 COLPM1          = $D013
+    =D016     035 COLPF0          = $D016
+    =D017     036 COLPF1          = $D017
+    =D018     037 COLPF2          = $D018
+    =D01D     038 GRACTL          = $D01D
+              039
+    =D20A     040 RANDOM          = $D20A                           ; POKEY hardware registers
+              041
+    =D400     042 DMACTL          = $D400                           ; ANTIC hardware registers
+    =D407     043 PMBASE          = $D407
+    =D40A     044 WSYNC           = $D40A
+    =D40E     045 NMIEN           = $D40E
+              046
+    =E45C     047 SETVBV          = $E45C
+    =E462     048 XITVBV          = $E462
+              049
+    =004B     050 GRIDFORE.COL    = $4B                             ; Bright purple
+    =0042     051 GRIDBACK.COL    = $42                             ; Dark purple
+              052
+    =0033     053 REDLINE.COL     = $33                             ; Dark red
+              054
+    =001A     055 LOGO.COL0       = $1A                             ; Shades of yellow
+    =001F     056 LOGO.COL1       = $1F
+    =0012     057 LOGO.COL2       = $12
+    =0014     058 LOGO.COL3       = $14
+    =0016     059 LOGO.COL4       = $16
+    =0018     060 LOGO.COL5       = $18
+    =001A     061 LOGO.COL6       = $1A
+    =001C     062 LOGO.COL7       = $1C
+              063
+    =0075     064 SHIP.COL0       = $75                             ; Blue 
+    =000F     065 SHIP.COL1       = $0F                             ; White
+              066
+    =002A     067 JET.COL0        = $2A                             ; Yellow
+    =0017     068 JET.COL1        = $17                             ; Orange
+              069
+    =003C     070 MISS.COL        = $3C                             ; Bright red (missiles)
+              071
+    =0000     072 SHADOW.COL      = $00                             ; Black
+              073
+    =007B     074 SHIP.XINIT      = 123
+    =00A3     075 SHIP.YMIN       = 163
+    =00B0     076 SHIP.YMAX       = SHIP.YMIN+SHIP.LEN-1
+              077
+    =00B7     078 JET.YMIN        = 183
+    =00E1     079 JET.YMAX        = 225
+              080
+    =0003     081 SHADOW.DX       = 3
+    =0004     082 SHADOW.DY       = 4
+              083
+    =0008     084 STICK.RGHT      = $08
+    =0004     085 STICK.LEFT      = $04
+              086
+    =00CB     087 L.PTR           = 203
+              088
+              089                 *= $3000
+3000          090 START
+3000 204230   091                 JSR DLIST.INIT
+3003 205131   092                 JSR DLI.INIT
+3006 20F331   093                 JSR CHAR.INIT
+3009 20F931   094                 JSR PM.INIT
+300C 208332   095                 JSR VBI.INIT
+300F 20B532   096                 JSR SCR.INIT
+              097
+              098 ; *** LOOP ************************************************
+              099
+3012 203834   100 LOOP            JSR DELAY.1
+              101
+3015 203033   102                 JSR MISSILE.CTRL
+3018 AD3634   103                 LDA SHIP.X
+301B 8D00D0   104                 STA HPOSP0
+301E 8D01D0   105                 STA HPOSP1
+3021 18       106                 CLC
+3022 6903     107                 ADC #SHADOW.DX
+3024 8D02D0   108                 STA HPOSP2
+              109
+3027 AD7802   110                 LDA STICK0
+302A 49FF     111                 EOR #$FF
+302C A8       112                 TAY
+302D 2908     113                 AND #STICK.RGHT
+302F F006     114                 BEQ LF
+3031 EE3634   115                 INC SHIP.X                        ; Move right
+3034 4C1230   116                 JMP LOOP
+              117
+3037 98       118 LF              TYA
+3038 2904     119                 AND #STICK.LEFT
+303A F0D6     120                 BEQ LOOP
+303C CE3634   121                 DEC SHIP.X                        ; Move left
+303F 4C1230   122                 JMP LOOP
+              123
+              124 ; *** DISPLAY LIST ****************************************
+              125
+3042          126 DLIST.INIT
+3042 A933     127                 LDA #REDLINE.COL
+3044 8DC702   128                 STA COLOR3
+              129
+3047 A94C     130                 LDA #>SCRMEM                      ; Clear 1K screen RAM
+3049 A204     131                 LDX #4
+304B 206734   132                 JSR CLR.PAGES
+              133
+304E A959     134                 LDA # <DSPLST
+3050 8D3002   135                 STA SDLSTL
+3053 A930     136                 LDA # >DSPLST
+3055 8D3102   137                 STA SDLSTL+1
+3058 60       138                 RTS
+              139
+    =0000     140 BLK1            = $00                             ; ANTIC instructions
+    =0070     141 BLK8            = $70
+    =0080     142 DLI             = $80
+    =0040     143 LDM             = $40
+    =0041     144 JVB             = $41
+              145
+    =0002     146 GR0             = $02
+    =0006     147 GR1             = $06
+    =0004     148 GR12            = $04
+    =000C     149 GR14            = $0C
+              150
+    =4C00     151 GRID.L00        = SCRMEM
+    =4D68     152 GRID.L09        = SCRMEM+9*40
+              153
+              154 ; Init DL LDM addresses for logo
+              155 ;
+              156 ; Logo memory layout 2 x 16 bytes/row (narrow PF)
+              157 ; X = Intial DL LDM addresses
+              158 ;
+              159 ; Line 00 X...............################
+              160 ; Line 01 ################X...............
+              161 ; Line 02 X...............################
+              162 ; Line 03 ################X...............
+              163 ; ...
+              164 ; Line 14 X...............################
+              165 ; Line 15 ################X...............
+              166
+    =4A00     167 LOGO.L00        = LOGOMEM
+    =4A30     168 LOGO.L01        = LOGOMEM+1*$20+$10
+    =4A40     169 LOGO.L02        = LOGOMEM+2*$20
+    =4A70     170 LOGO.L03        = LOGOMEM+3*$20+$10
+    =4A80     171 LOGO.L04        = LOGOMEM+4*$20
+    =4AB0     172 LOGO.L05        = LOGOMEM+5*$20+$10
+    =4AC0     173 LOGO.L06        = LOGOMEM+6*$20
+    =4AF0     174 LOGO.L07        = LOGOMEM+7*$20+$10
+    =4B00     175 LOGO.L08        = LOGOMEM+8*$20
+    =4B30     176 LOGO.L09        = LOGOMEM+9*$20+$10
+    =4B40     177 LOGO.L10        = LOGOMEM+10*$20
+    =4B70     178 LOGO.L11        = LOGOMEM+11*$20+$10
+    =4B80     179 LOGO.L12        = LOGOMEM+12*$20
+    =4BB0     180 LOGO.L13        = LOGOMEM+13*$20+$10
+    =4BC0     181 LOGO.L14        = LOGOMEM+14*$20
+    =4BF0     182 LOGO.L15        = LOGOMEM+15*$20+$10
+              183
+3059          184 DSPLST
+3059 70       185                 .BYTE BLK8
+305A 70       186                 .BYTE BLK8
+305B F0       187                 .BYTE BLK8!DLI                    ; DLI #0
+305C 44004C   188                 .BYTE GR12!LDM,<GRID.L00,>GRID.L00
+305F 04       189                 .BYTE GR12
+3060 04       190                 .BYTE GR12
+3061 04       191                 .BYTE GR12
+3062 46B130   192                 .BYTE GR1!LDM,<TXTROW0,>TXTROW0
+3065 F0       193                 .BYTE BLK8!DLI                    ; DLI #1
+3066 4C004A   194 DS2             .BYTE GR14!LDM,<LOGO.L00,>LOGO.L00
+3069 CC304A   195 DS3             .BYTE GR14!LDM!DLI,<LOGO.L01,>LOGO.L01; DLI #2
+306C 4C404A   196                 .BYTE GR14!LDM,<LOGO.L02,>LOGO.L02
+306F CC704A   197                 .BYTE GR14!LDM!DLI,<LOGO.L03,>LOGO.L03; DLI #3
+3072 4C804A   198                 .BYTE GR14!LDM,<LOGO.L04,>LOGO.L04
+3075 CCB04A   199                 .BYTE GR14!LDM!DLI,<LOGO.L05,>LOGO.L05; DLI #4
+3078 4CC04A   200                 .BYTE GR14!LDM,<LOGO.L06,>LOGO.L06
+307B CCF04A   201                 .BYTE GR14!LDM!DLI,<LOGO.L07,>LOGO.L07; DLI #5
+307E 4C004B   202                 .BYTE GR14!LDM,<LOGO.L08,>LOGO.L08
+3081 CC304B   203                 .BYTE GR14!LDM!DLI,<LOGO.L09,>LOGO.L09; DLI #6
+3084 4C404B   204                 .BYTE GR14!LDM,<LOGO.L10,>LOGO.L10
+3087 CC704B   205                 .BYTE GR14!LDM!DLI,<LOGO.L11,>LOGO.L11; DLI #7
+308A 4C804B   206                 .BYTE GR14!LDM,<LOGO.L12,>LOGO.L12
+308D CCB04B   207                 .BYTE GR14!LDM!DLI,<LOGO.L13,>LOGO.L13; DLI #8
+3090 4CC04B   208                 .BYTE GR14!LDM,<LOGO.L14,>LOGO.L14
+3093 CCF04B   209                 .BYTE GR14!DLI!LDM,<LOGO.L15,>LOGO.L15; DLI #9
+3096 70       210                 .BYTE BLK8
+3097 C6C530   211                 .BYTE GR1!LDM!DLI,<TXTROW1,>TXTROW1; DLI #10
+309A 00       212                 .BYTE BLK1
+309B 42D930   213                 .BYTE GR0!LDM,<TXTROW2,>TXTROW2
+309E 02       214                 .BYTE GR0
+309F 82       215                 .BYTE GR0!DLI                     ; DLI #11
+30A0 00       216                 .BYTE BLK1
+30A1 44684D   217                 .BYTE GR12!LDM,<GRID.L09,>GRID.L09
+30A4 04       218                 .BYTE GR12
+30A5 84       219                 .BYTE GR12!DLI                    ; DLI #12
+30A6 04       220                 .BYTE GR12
+30A7 84       221                 .BYTE GR12!DLI                    ; DLI #13
+30A8 04       222                 .BYTE GR12
+30A9 04       223                 .BYTE GR12
+30AA 04       224                 .BYTE GR12
+30AB 04       225                 .BYTE GR12
+30AC 04       226                 .BYTE GR12
+30AD 04       227                 .BYTE GR12
+30AE 415930   228                 .BYTE JVB, <DSPLST, >DSPLST
+              229
+30B1          230 TXTROW0
+30B1 40404040 231                 .BYTE "@@@@@@@@@@@@@@@@@@@@"
+30B5 40404040
+30B9 40404040
+30BD 40404040
+30C1 40404040
+30C5          232 TXTROW1
+30C5 40404040 233                 .BYTE "@@@@@@@@@@@@@@@@@@@@"
+30C9 40404040
+30CD 40404040
+30D1 40404040
+30D5 40404040
+30D9          234 TXTROW2
+30D9 40404040 235                 .BYTE "@@@@@@@@@@@@@@@@@@"
+30DD 40404040
+30E1 40404040
+30E5 40404040
+30E9 4040    
+30EB 24       236                 .BYTE 'D-$20
+30EC 25       237                 .BYTE 'e-$40
+30ED 2D       238                 .BYTE 'm-$40
+30EE 2F       239                 .BYTE 'o-$40
+30EF 40404040 240                 .BYTE "@@@@@@@@@@@@@@@@@@"
+30F3 40404040
+30F7 40404040
+30FB 40404040
+30FF 4040    
+              241
+3101 40404040 242                 .BYTE "@@@@@@@@"
+3105 40404040
+3109 11       243                 .BYTE '1-$20
+310A 19       244                 .BYTE '9-$20
+310B 18       245                 .BYTE '8-$20
+310C 17       246                 .BYTE '7-$20
+310D 40       247                 .BYTE '@
+310E 08       248                 .BYTE '(-$20
+310F 23       249                 .BYTE 'C-$20
+3110 09       250                 .BYTE ')-$20
+3111 40       251                 .BYTE '@
+3112 22       252                 .BYTE 'b-$40
+3113 39       253                 .BYTE 'y-$40
+3114 40       254                 .BYTE '@
+3115 2C       255                 .BYTE 'L-$20
+3116 2F       256                 .BYTE 'o-$40
+3117 32       257                 .BYTE 'r-$40
+3118 25       258                 .BYTE 'e-$40
+3119 2E       259                 .BYTE 'n-$40
+311A 3A       260                 .BYTE 'z-$40
+311B 40       261                 .BYTE '@
+311C 37       262                 .BYTE 'W-$20
+311D 29       263                 .BYTE 'i-$40
+311E 25       264                 .BYTE 'e-$40
+311F 33       265                 .BYTE 's-$40
+3120 34       266                 .BYTE 't-$40
+3121 40404040 267                 .BYTE "@@@@@@@@"
+3125 40404040
+3129 3F3F3F3F 268                 .BYTE "????????????????????????????????????????"
+312D 3F3F3F3F
+3131 3F3F3F3F
+3135 3F3F3F3F
+3139 3F3F3F3F
+313D 3F3F3F3F
+3141 3F3F3F3F
+3145 3F3F3F3F
+3149 3F3F3F3F
+314D 3F3F3F3F
+              269
+              270 ; *** DISPLAY LIST INTERRUPT ******************************
+              271
+3151          272 DLI.INIT
+3151 A961     273                 LDA # <DLI.HANDLER
+3153 8D0002   274                 STA VDSLST
+3156 A931     275                 LDA # >DLI.HANDLER
+3158 8D0102   276                 STA VDSLST+1
+315B A9C0     277                 LDA #192
+315D 8D0ED4   278                 STA NMIEN
+3160 60       279                 RTS
+              280
+3161          281 DLI.HANDLER
+3161 48       282                 PHA
+3162 8A       283                 TXA
+3163 48       284                 PHA
+3164 ADE631   285                 LDA DLICOUNT
+3167 8D0AD4   286                 STA WSYNC
+              287
+316A F031     288                 BEQ JP11
+              289
+316C C901     290 DL1             CMP #1
+316E D007     291                 BNE DL2
+3170 A93D     292                 LDA #$3D                          ; Narrow PF
+3172 8D00D4   293                 STA DMACTL
+3175 D053     294                 BNE DLA
+              295
+3177 C909     296 DL2             CMP #9
+3179 904F     297                 BCC DLA
+              298
+317B C909     299                 CMP #9
+317D D007     300                 BNE DL10
+317F A93E     301                 LDA #$3E                          ; Standard PF
+3181 8D00D4   302                 STA DMACTL
+3184 D044     303                 BNE DLA
+              304
+3186 C90A     305 DL10            CMP #10
+3188 D00F     306                 BNE DL11
+318A ADE731   307                 LDA DLI.GR0.COL1
+318D 8D17D0   308                 STA COLPF1
+3190 ADE831   309                 LDA DLI.GR0.COL2
+3193 8D18D0   310                 STA COLPF2
+3196 4CD331   311                 JMP DLI.EXIT
+              312
+3199 C90B     313 DL11            CMP #11
+319B D00F     314                 BNE DL12
+319D ADE931   315 JP11            LDA DLI.GR12.COL1
+31A0 8D17D0   316                 STA COLPF1
+31A3 ADEA31   317                 LDA DLI.GR12.COL2
+31A6 8D18D0   318                 STA COLPF2
+31A9 4CD331   319                 JMP DLI.EXIT
+              320
+31AC C90C     321 DL12            CMP #12
+31AE D00D     322                 BNE DL13
+31B0 A975     323                 LDA #SHIP.COL0
+31B2 8D12D0   324                 STA COLPM0
+31B5 A90F     325                 LDA #SHIP.COL1
+31B7 8D13D0   326                 STA COLPM1
+31BA 4CD331   327                 JMP DLI.EXIT
+              328
+31BD A92A     329 DL13            LDA #JET.COL0
+31BF 8D12D0   330                 STA COLPM0
+31C2 A917     331                 LDA #JET.COL1
+31C4 8D13D0   332                 STA COLPM1
+31C7 4CD331   333                 JMP DLI.EXIT
+              334
+31CA AEE631   335 DLA             LDX DLICOUNT
+31CD BDEA31   336                 LDA LOGO.COLTAB-1,X
+31D0 8D16D0   337                 STA COLPF0
+              338
+31D3          339 DLI.EXIT
+31D3 EEE631   340                 INC DLICOUNT
+31D6 ADE631   341                 LDA DLICOUNT
+31D9 C90E     342                 CMP #14
+31DB D005     343                 BNE DL99
+31DD A900     344                 LDA #0
+31DF 8DE631   345                 STA DLICOUNT
+31E2 68       346 DL99            PLA
+31E3 AA       347                 TAX
+31E4 68       348                 PLA
+31E5 40       349                 RTI
+              350
+31E6          351 DLICOUNT
+31E6 00       352                 .BYTE 0
+              353
+31E7          354 DLI.GR0.COL1
+31E7 00       355                 .BYTE 0
+31E8          356 DLI.GR0.COL2
+31E8 00       357                 .BYTE 0
+              358
+31E9          359 DLI.GR12.COL1
+31E9 00       360                 .BYTE 0
+31EA          361 DLI.GR12.COL2
+31EA 00       362                 .BYTE 0
+              363
+31EB          364 LOGO.COLTAB
+31EB 1A       365                 .BYTE LOGO.COL0
+31EC 1F       366                 .BYTE LOGO.COL1
+31ED 12       367                 .BYTE LOGO.COL2
+31EE 14       368                 .BYTE LOGO.COL3
+31EF 16       369                 .BYTE LOGO.COL4
+31F0 18       370                 .BYTE LOGO.COL5
+31F1 1A       371                 .BYTE LOGO.COL6
+31F2 1C       372                 .BYTE LOGO.COL7
+              373
+              374 ; *** CHARACTER SET ***************************************
+              375
+31F3          376 CHAR.INIT
+31F3 A948     377                 LDA #>CHARSET
+31F5 8DF402   378                 STA CHRBAS
+31F8 60       379                 RTS
+              380
+              381 ; *** PLAYER/MISSILES *************************************
+              382
+31F9          383 PM.INIT
+31F9 A940     384                 LDA #>PM
+31FB 8D07D4   385                 STA PMBASE
+              386
+31FE A208     387                 LDX #8                            ; Clear 2K PM RAM
+3200 206734   388                 JSR CLR.PAGES
+              389
+3203 A93C     390                 LDA #MISS.COL
+3205 8DC002   391                 STA PCOLR0
+3208 8DC102   392                 STA PCOLR1
+320B A900     393                 LDA #SHADOW.COL
+320D 8DC202   394                 STA PCOLR2
+              395
+3210 A93E     396                 LDA #$3E
+3212 8D2F02   397                 STA SDMCTL
+3215 A903     398                 LDA #$03
+3217 8D1DD0   399                 STA GRACTL
+321A A901     400                 LDA #$01
+321C 8D6F02   401                 STA GPRIOR
+              402
+321F A97B     403                 LDA #SHIP.XINIT
+3221 8D3634   404                 STA SHIP.X
+3224 8D00D0   405                 STA HPOSP0
+3227 8D01D0   406                 STA HPOSP1
+322A A97E     407                 LDA #SHIP.XINIT+SHADOW.DX
+322C 8D02D0   408                 STA HPOSP2
+              409
+322F A200     410                 LDX #0
+3231 A0A3     411                 LDY #SHIP.YMIN
+3233 BD5832   412 PM2             LDA PL0.DATA,X
+3236 990044   413                 STA PL0MEM,Y
+3239 BD6632   414                 LDA PL1.DATA,X
+323C 990045   415                 STA PL1MEM,Y
+323F 990446   416                 STA PL2MEM+SHADOW.DY,Y
+3242 E8       417                 INX
+3243 C8       418                 INY
+3244 C0B1     419                 CPY #SHIP.YMAX+1
+3246 D0EB     420                 BNE PM2
+              421
+3248 A0B7     422                 LDY #JET.YMIN
+324A A918     423                 LDA #$18                          ; ...##...
+324C 990044   424 PM3             STA PL0MEM,Y
+324F 990045   425                 STA PL1MEM,Y
+3252 C8       426                 INY
+3253 C0E2     427                 CPY #JET.YMAX+1
+3255 D0F5     428                 BNE PM3
+3257 60       429                 RTS
+              430
+    =000E     431 SHIP.LEN        = 14
+              432
+3258          433 PL0.DATA
+3258 00       434                 .BYTE $00                         ; ........
+3259 00       435                 .BYTE $00                         ; ........
+325A 00       436                 .BYTE $00                         ; ........
+325B 00       437                 .BYTE $00                         ; ........
+325C 10       438                 .BYTE $10                         ; ...#....
+325D 10       439                 .BYTE $10                         ; ...#....
+325E 10       440                 .BYTE $10                         ; ...#....
+325F 00       441                 .BYTE $00                         ; ........
+3260 00       442                 .BYTE $00                         ; ........
+3261 28       443                 .BYTE $28                         ; ..#.#...
+3262 28       444                 .BYTE $28                         ; ..#.#...
+3263 6C       445                 .BYTE $6C                         ; .##.##..
+3264 00       446                 .BYTE $00                         ; ........
+3265 00       447                 .BYTE $00                         ; ........
+              448
+3266          449 PL1.DATA
+3266 10       450                 .BYTE $10                         ; ...#....
+3267 10       451                 .BYTE $10                         ; ...#....
+3268 10       452                 .BYTE $10                         ; ...#....
+3269 38       453                 .BYTE $38                         ; ..###...
+326A 38       454                 .BYTE $38                         ; ..###...
+326B 38       455                 .BYTE $38                         ; ..###...
+326C 38       456                 .BYTE $38                         ; ..###...
+326D 38       457                 .BYTE $38                         ; ..###...
+326E 7C       458                 .BYTE $7C                         ; .#####..
+326F FE       459                 .BYTE $FE                         ; #######.
+3270 FE       460                 .BYTE $FE                         ; #######.
+3271 FE       461                 .BYTE $FE                         ; #######.
+3272 7C       462                 .BYTE $7C                         ; .#####..
+3273 28       463                 .BYTE $28                         ; ..#.#...
+              464
+    =000F     465 MISS.LEN        = 15
+              466
+3274          467 MI0.DATA
+3274 AA       468                 .BYTE $AA                         ; #.#.#.#.
+3275 AA       469                 .BYTE $AA                         ; #.#.#.#.
+3276 AA       470                 .BYTE $AA                         ; #.#.#.#.
+3277 AA       471                 .BYTE $AA                         ; #.#.#.#.
+3278 AA       472                 .BYTE $AA                         ; #.#.#.#.
+3279 AA       473                 .BYTE $AA                         ; #.#.#.#.
+327A AA       474                 .BYTE $AA                         ; #.#.#.#.
+327B AA       475                 .BYTE $AA                         ; #.#.#.#.
+327C 00       476                 .BYTE $00                         ; ........
+327D AA       477                 .BYTE $AA                         ; #.#.#.#.
+327E AA       478                 .BYTE $AA                         ; #.#.#.#.
+327F 00       479                 .BYTE $00                         ; ........
+3280 AA       480                 .BYTE $AA                         ; #.#.#.#.
+3281 00       481                 .BYTE $00                         ; ........
+3282 AA       482                 .BYTE $AA                         ; #.#.#.#.
+              483
+              484 ; *** VERTICAL BLANK INTERRUPT ****************************
+              485
+3283          486 VBI.INIT
+3283 A232     487                 LDX #>VBI.HANDLER                 ; Add to deferred VBI
+3285 A08D     488                 LDY #<VBI.HANDLER
+3287 A907     489                 LDA #7
+3289 205CE4   490                 JSR SETVBV
+328C 60       491                 RTS
+              492
+328D          493 VBI.HANDLER
+328D AD0748   494                 LDA CHARSET+7                     ; Scroll 1st char in charset
+3290 48       495                 PHA
+3291 A006     496                 LDY #6
+3293 B90048   497 VB1             LDA CHARSET,Y
+3296 990148   498                 STA CHARSET+1,Y
+3299 88       499                 DEY
+329A 10F7     500                 BPL VB1
+329C 68       501                 PLA
+329D 8D0048   502                 STA CHARSET
+              503
+32A0 A0B7     504                 LDY #JET.YMIN                     ; Make jet sparkle
+32A2 AD0AD2   505 VB2             LDA RANDOM
+32A5 2918     506                 AND #$18                          ; ...##...
+32A7 990044   507                 STA PL0MEM,Y
+32AA 990446   508                 STA PL2MEM+SHADOW.DY,Y
+32AD C8       509                 INY
+32AE C0E2     510                 CPY #JET.YMAX+1
+32B0 D0F0     511                 BNE VB2
+32B2 4C62E4   512                 JMP XITVBV
+              513
+              514 ; *** SCREEN **********************************************
+              515
+32B5          516 SCR.INIT
+32B5 20C232   517                 JSR REDLINES.FADEIN
+32B8 20D632   518                 JSR LOGO.SCROLLIN
+32BB 20F432   519                 JSR TEXT.FADEIN
+32BE 200533   520                 JSR GRID.FADEIN
+32C1 60       521                 RTS
+              522
+    =00CD     523 HORI.BAR        = $CD
+              524
+32C2          525 REDLINES.FADEIN
+32C2 A200     526                 LDX #0
+32C4 A013     527                 LDY #19
+32C6 A9CD     528                 LDA #HORI.BAR
+32C8 99B130   529 LC1             STA TXTROW0,Y
+32CB 9DC530   530                 STA TXTROW1,X
+32CE 203D34   531                 JSR DELAY.6
+32D1 E8       532                 INX
+32D2 88       533                 DEY
+32D3 10F3     534                 BPL LC1
+32D5 60       535                 RTS
+              536
+32D6          537 LOGO.SCROLLIN
+32D6 A010     538                 LDY #16                           ; # narrow PF bytes to scroll
+32D8 A200     539 FL2             LDX #0
+32DA FE6730   540 FL3             INC DS2+1,X
+32DD DE6A30   541                 DEC DS3+1,X
+32E0 E8       542                 INX
+32E1 E8       543                 INX
+32E2 E8       544                 INX
+32E3 E8       545                 INX
+32E4 E8       546                 INX
+32E5 E8       547                 INX
+32E6 E030     548                 CPX #48
+32E8 90F0     549                 BCC FL3
+32EA 204234   550                 JSR DELAY.12
+32ED 88       551                 DEY
+32EE D0E8     552                 BNE FL2
+32F0 204734   553                 JSR DELAY.250
+32F3 60       554                 RTS
+              555
+32F4          556 TEXT.FADEIN
+32F4 A200     557                 LDX #0
+32F6 8EE731   558 SC3             STX DLI.GR0.COL1
+32F9 203D34   559                 JSR DELAY.6
+32FC E8       560                 INX
+32FD E00F     561                 CPX #15
+32FF D0F5     562                 BNE SC3
+3301 204734   563                 JSR DELAY.250
+3304 60       564                 RTS
+              565
+3305          566 GRID.FADEIN
+3305 A940     567                 LDA #GRIDBACK.COL&$F0
+3307 8DE931   568                 STA DLI.GR12.COL1
+330A 203D34   569                 JSR DELAY.6
+              570
+330D A200     571                 LDX #0
+330F EEE931   572 SC6             INC DLI.GR12.COL1
+3312 203D34   573                 JSR DELAY.6
+3315 E8       574                 INX
+3316 E009     575                 CPX #GRIDFORE.COL-GRIDBACK.COL
+3318 D0F5     576                 BNE SC6
+              577
+331A A940     578                 LDA #GRIDBACK.COL&$F0
+331C 8DEA31   579                 STA DLI.GR12.COL2
+331F EEEA31   580 LC7             INC DLI.GR12.COL2
+3322 EEE931   581                 INC DLI.GR12.COL1
+3325 203D34   582                 JSR DELAY.6
+3328 ADE931   583                 LDA DLI.GR12.COL1
+332B C94B     584                 CMP #GRIDFORE.COL
+332D D0F0     585                 BNE LC7
+332F 60       586                 RTS
+              587
+              588 ; *** MISSILE CONTROL *************************************
+              589
+    =0002     590 MISS.RELDX      = 2
+    =0002     591 MISS.DX         = 2
+    =0020     592 MISS.YMIN       = 32                              ; first visible missile PL row on PF
+    =00A2     593 MISS.YMAX       = 162                             ; last visible missile PL row on PF
+    =0002     594 MISS.VY         = 2
+              595
+3330          596 MISSILE.CTRL
+3330 AD3734   597                 LDA MISS.Y
+3333 D025     598                 BNE MISSILE.UPDATE
+              599
+3335 AD8402   600                 LDA STRIG0
+3338 D07F     601                 BNE MISSILE.EXIT                  ; trigger not pressed
+              602
+333A          603 MISSILE.INIT
+333A AD3634   604                 LDA SHIP.X
+333D 18       605                 CLC
+333E 6902     606                 ADC #MISS.RELDX
+3340 8D04D0   607                 STA HPOSM0
+3343 6902     608                 ADC #MISS.DX
+3345 8D05D0   609                 STA HPOSM1
+3348 6901     610                 ADC #SHADOW.DX-MISS.DX
+334A 8D06D0   611                 STA HPOSM2
+334D 6902     612                 ADC #MISS.DX
+334F 8D07D0   613                 STA HPOSM3
+              614
+3352 A9A2     615                 LDA #MISS.YMAX
+3354 8D3734   616                 STA MISS.Y
+3357 4C8533   617                 JMP MISSILE.SET
+              618
+335A          619 MISSILE.UPDATE
+335A          620 MISSILE.CLR
+335A AE3734   621                 LDX MISS.Y
+335D A0A3     622                 LDY #MISS.YMAX+1
+335F 20BA33   623                 JSR MISSILE.CLIPY
+3362 9005     624                 BCC MISSILE.CLRSHADOW
+3364 A90F     625                 LDA #$0F                          ; ....####
+3366 20F133   626                 JSR MISSILE.CLRSHAPE
+              627
+3369          628 MISSILE.CLRSHADOW
+3369 AD3734   629                 LDA MISS.Y
+336C 18       630                 CLC
+336D 6904     631                 ADC #SHADOW.DY
+336F AA       632                 TAX
+3370 A0A7     633                 LDY #MISS.YMAX+SHADOW.DY+1
+3372 20BA33   634                 JSR MISSILE.CLIPY
+3375 9005     635                 BCC MISSILE.MOVE
+3377 A9F0     636                 LDA #$F0                          ; ####....
+3379 20F133   637                 JSR MISSILE.CLRSHAPE
+              638
+337C          639 MISSILE.MOVE
+337C 38       640                 SEC
+337D AD3734   641                 LDA MISS.Y
+3380 E902     642                 SBC #MISS.VY
+3382 8D3734   643                 STA MISS.Y
+              644
+3385          645 MISSILE.SET
+3385 AE3734   646                 LDX MISS.Y
+3388 A0A3     647                 LDY #MISS.YMAX+1
+338A 20BA33   648                 JSR MISSILE.CLIPY
+338D 9005     649                 BCC MISSILE.SETSHADOW
+338F A90F     650                 LDA #$0F                          ; ....####
+3391 200934   651                 JSR MISSILE.SETSHAPE
+              652
+3394          653 MISSILE.SETSHADOW
+3394 AD3734   654                 LDA MISS.Y
+3397 18       655                 CLC
+3398 6904     656                 ADC #SHADOW.DY
+339A AA       657                 TAX
+339B A0A7     658                 LDY #MISS.YMAX+SHADOW.DY+1
+339D 20BA33   659                 JSR MISSILE.CLIPY
+33A0 9006     660                 BCC MISSILE.END
+33A2 A9F0     661                 LDA #$F0                          ; ####....
+33A4 200934   662                 JSR MISSILE.SETSHAPE
+33A7 60       663                 RTS
+              664
+33A8          665 MISSILE.END
+33A8 A900     666                 LDA #0
+33AA 8D3734   667                 STA MISS.Y
+33AD 8D04D0   668                 STA HPOSM0
+33B0 8D05D0   669                 STA HPOSM1
+33B3 8D06D0   670                 STA HPOSM2
+33B6 8D07D0   671                 STA HPOSM3
+              672
+33B9          673 MISSILE.EXIT
+33B9 60       674                 RTS
+              675
+33BA          676 MISSILE.CLIPY
+              677 ; IN
+              678 ;   X = top row of missile PM on PF (may be outside PF)
+              679 ;   Y = bottom row to clip PM against
+              680 ; OUT
+              681 ;   C = 0 -> missile PM offscreen
+              682 ;   L.YTOP   = top row of missile PM on PF (may be outside PF)
+              683 ;   L.YSTART = first visible row of missile PM on PF
+              684 ;   L.YEND   = last visible row of missile PM on PF + 1
+              685
+33BA 8EEE33   686                 STX L.YTOP
+33BD 8EEF33   687                 STX L.YSTART
+              688
+33C0 CA       689                 DEX
+33C1 8A       690                 TXA
+33C2 18       691                 CLC
+33C3 690F     692                 ADC #MISS.LEN
+33C5 8DF033   693                 STA L.YEND
+              694
+33C8 ADF033   695                 LDA L.YEND
+33CB C920     696                 CMP #MISS.YMIN
+33CD B002     697                 BCS SM1
+              698
+33CF 18       699                 CLC                               ; missile outside PF
+33D0 60       700                 RTS
+              701
+33D1          702 SM1
+33D1 ADEF33   703                 LDA L.YSTART
+33D4 C920     704                 CMP #MISS.YMIN
+33D6 B005     705                 BCS SM2
+              706
+33D8 A920     707                 LDA #MISS.YMIN                    ; clip missile at top
+33DA 8DEF33   708                 STA L.YSTART
+              709
+33DD          710 SM2
+33DD CCF033   711                 CPY L.YEND
+33E0 F007     712                 BEQ SM3
+33E2 9005     713                 BCC SM3
+              714
+33E4 38       715                 SEC                               ; clip missile at bottom
+33E5 EEF033   716                 INC L.YEND
+33E8 60       717                 RTS
+              718
+33E9          719 SM3
+33E9 38       720                 SEC
+33EA 8CF033   721                 STY L.YEND
+33ED 60       722                 RTS
+              723
+33EE          724 L.YTOP
+33EE 00       725                 .BYTE 0
+33EF          726 L.YSTART
+33EF 00       727                 .BYTE 0
+33F0          728 L.YEND
+33F0 00       729                 .BYTE 0
+              730
+33F1          731 MISSILE.CLRSHAPE
+33F1 49FF     732                 EOR #$FF
+33F3 8D3434   733                 STA L.MASK
+33F6 AEEF33   734                 LDX L.YSTART
+33F9 BD0043   735 LM1             LDA MI0MEM,X
+33FC 2D3434   736                 AND L.MASK
+33FF 9D0043   737                 STA MI0MEM,X
+3402 E8       738                 INX
+3403 ECF033   739                 CPX L.YEND
+3406 D0F1     740                 BNE LM1
+3408 60       741                 RTS
+              742
+3409          743 MISSILE.SETSHAPE
+3409 8D3434   744                 STA L.MASK
+340C AEEF33   745                 LDX L.YSTART
+340F 8A       746                 TXA
+3410 38       747                 SEC
+3411 EDEE33   748                 SBC L.YTOP
+3414 A8       749                 TAY
+3415 B97432   750 LM2             LDA MI0.DATA,Y
+3418 2D3434   751                 AND L.MASK
+341B 8D3534   752                 STA L.FRAG
+341E AD3434   753                 LDA L.MASK
+3421 49FF     754                 EOR #$FF
+3423 3D0043   755                 AND MI0MEM,X
+3426 0D3534   756                 ORA L.FRAG
+3429 9D0043   757                 STA MI0MEM,X
+342C C8       758                 INY
+342D E8       759                 INX
+342E ECF033   760                 CPX L.YEND
+3431 D0E2     761                 BNE LM2
+3433 60       762                 RTS
+              763
+3434          764 L.MASK
+3434 00       765                 .BYTE 0
+3435          766 L.FRAG
+3435 00       767                 .BYTE 0
+3436          768 SHIP.X
+3436 00       769                 .BYTE 0
+3437          770 MISS.Y
+3437 00       771                 .BYTE 0
+              772
+              773 ; *** UTILITIES *******************************************
+              774
+3438          775 DELAY.1
+3438 48       776                 PHA
+3439 A901     777                 LDA #1
+343B D00D     778                 BNE DY1
+343D          779 DELAY.6
+343D 48       780                 PHA
+343E A906     781                 LDA #6
+3440 D008     782                 BNE DY1
+3442          783 DELAY.12
+3442 48       784                 PHA
+3443 A90C     785                 LDA #12
+3445 D003     786                 BNE DY1
+3447          787 DELAY.250
+3447 48       788                 PHA
+3448 A9FA     789                 LDA #250
+344A 8D6634   790 DY1             STA SAVE.DELAY
+344D 8A       791                 TXA
+344E 48       792                 PHA
+344F 98       793                 TYA
+3450 48       794                 PHA
+3451 A004     795 DY2             LDY #4
+3453 A200     796                 LDX #0
+3455 CA       797 DY3             DEX
+3456 D0FD     798                 BNE DY3
+3458 88       799                 DEY
+3459 D0FA     800                 BNE DY3
+345B CE6634   801                 DEC SAVE.DELAY
+345E D0F1     802                 BNE DY2
+3460 68       803                 PLA
+3461 A8       804                 TAY
+3462 68       805                 PLA
+3463 AA       806                 TAX
+3464 68       807                 PLA
+3465 60       808                 RTS
+              809
+3466          810 SAVE.DELAY
+3466 00       811                 .BYTE 0
+              812
+3467          813 CLR.PAGES
+              814 ; A = Start page to delete;
+              815 ; X = # (>0) pages to delete
+              816
+3467 85CC     817                 STA L.PTR+1
+3469 A900     818                 LDA #0
+346B 85CB     819                 STA L.PTR
+346D A8       820                 TAY
+346E 91CB     821 CP1             STA (L.PTR),Y
+3470 C8       822                 INY
+3471 D0FB     823                 BNE CP1
+3473 E6CC     824                 INC L.PTR+1
+3475 CA       825                 DEX
+3476 D0F6     826                 BNE CP1
+3478 60       827                 RTS
+              828
+              829                 *= $4000
+4000          830 PM
+              831                 *= PM+$300
+4300          832 MI0MEM
+              833                 *= PM+$400
+4400          834 PL0MEM
+              835                 *= PM+$500
+4500          836 PL1MEM
+              837                 *= PM+$600
+4600          838 PL2MEM
+              839                 *= $4800
+4800          840 CHARSET                                           ; 64 x 8 = 512 ($200) bytes
+4800 AABFBFBF 841                 .BYTE $AA,$BF,$BF,$BF,$BF,$BF,$BF,$BF
+4804 BFBFBFBF
+4808 00181818 842                 .BYTE $00,$18,$18,$18,$18,$00,$18,$00
+480C 18001800
+4810 00666666 843                 .BYTE $00,$66,$66,$66,$00,$00,$00,$00
+4814 00000000
+4818 0066FF66 844                 .BYTE $00,$66,$FF,$66,$66,$FF,$66,$00
+481C 66FF6600
+4820 6C007E06 845                 .BYTE $6C,$00,$7E,$06,$7E,$66,$7E,$00
+4824 7E667E00
+4828 6C007CC6 846                 .BYTE $6C,$00,$7C,$C6,$C6,$C6,$7C,$00
+482C C6C67C00
+4830 6C00C6C6 847                 .BYTE $6C,$00,$C6,$C6,$C6,$C6,$7E,$00
+4834 C6C67E00
+4838 7CC6C6DC 848                 .BYTE $7C,$C6,$C6,$DC,$C6,$C6,$FC,$C0
+483C C6C6FCC0
+4840 0E1C1818 849                 .BYTE $0E,$1C,$18,$18,$18,$1C,$0E,$00
+4844 181C0E00
+4848 70381818 850                 .BYTE $70,$38,$18,$18,$18,$38,$70,$00
+484C 18387000
+4850 00663CFF 851                 .BYTE $00,$66,$3C,$FF,$3C,$66,$00,$00
+4854 3C660000
+4858 0018187E 852                 .BYTE $00,$18,$18,$7E,$18,$18,$00,$00
+485C 18180000
+4860 00000000 853                 .BYTE $00,$00,$00,$00,$00,$18,$18,$30
+4864 00181830
+4868 000000FF 854                 .BYTE $00,$00,$00,$FF,$FF,$00,$00,$00
+486C FF000000
+4870 00000000 855                 .BYTE $00,$00,$00,$00,$00,$18,$18,$00
+4874 00181800
+4878 00060C18 856                 .BYTE $00,$06,$0C,$18,$30,$60,$40,$00
+487C 30604000
+              857
+4880 007CC6E6 858                 .BYTE $00,$7C,$C6,$E6,$D6,$CE,$C6,$7C
+4884 D6CEC67C
+4888 00183878 859                 .BYTE $00,$18,$38,$78,$18,$18,$18,$FE
+488C 181818FE
+4890 007CC606 860                 .BYTE $00,$7C,$C6,$06,$7C,$C0,$C6,$FE
+4894 7CC0C6FE
+4898 00FE061C 861                 .BYTE $00,$FE,$06,$1C,$0C,$C6,$66,$3C
+489C 0CC6663C
+48A0 000C1C3C 862                 .BYTE $00,$0C,$1C,$3C,$6C,$FE,$0C,$0C
+48A4 6CFE0C0C
+48A8 00FEC6C0 863                 .BYTE $00,$FE,$C6,$C0,$FC,$06,$C6,$7C
+48AC FC06C67C
+48B0 003E60C0 864                 .BYTE $00,$3E,$60,$C0,$FC,$C6,$C6,$7C
+48B4 FCC6C67C
+48B8 00FE060C 865                 .BYTE $00,$FE,$06,$0C,$18,$30,$60,$60
+48BC 18306060
+48C0 007CC6C6 866                 .BYTE $00,$7C,$C6,$C6,$7C,$C6,$C6,$7C
+48C4 7CC6C67C
+48C8 007CC6C6 867                 .BYTE $00,$7C,$C6,$C6,$7E,$06,$0C,$78
+48CC 7E060C78
+48D0 00001818 868                 .BYTE $00,$00,$18,$18,$00,$18,$18,$00
+48D4 00181800
+48D8 00001818 869                 .BYTE $00,$00,$18,$18,$00,$18,$18,$30
+48DC 00181830
+48E0 060C1830 870                 .BYTE $06,$0C,$18,$30,$18,$0C,$06,$00
+48E4 180C0600
+48E8 00007E00 871                 .BYTE $00,$00,$7E,$00,$00,$7E,$00,$00
+48EC 007E0000
+48F0 6030180C 872                 .BYTE $60,$30,$18,$0C,$18,$30,$60,$00
+48F4 18306000
+48F8 003C6606 873                 .BYTE $00,$3C,$66,$06,$0C,$18,$00,$18
+48FC 0C180018
+              874
+4900 00000000 875                 .BYTE $00,$00,$00,$00,$00,$00,$00,$00
+4904 00000000
+4908 00007E06 876                 .BYTE $00,$00,$7E,$06,$7E,$66,$7E,$00
+490C 7E667E00
+4910 C0C0C0FC 877                 .BYTE $C0,$C0,$C0,$FC,$C6,$C6,$FC,$00
+4914 C6C6FC00
+4918 7CC6C0C0 878                 .BYTE $7C,$C6,$C0,$C0,$C0,$C6,$7C,$00
+491C C0C67C00
+4920 F8CCC6C6 879                 .BYTE $F8,$CC,$C6,$C6,$C6,$CC,$F8,$00
+4924 C6CCF800
+4928 00007CC6 880                 .BYTE $00,$00,$7C,$C6,$FE,$C0,$7E,$00
+492C FEC07E00
+4930 1E30FE30 881                 .BYTE $1E,$30,$FE,$30,$30,$30,$30,$00
+4934 30303000
+4938 00007EC6 882                 .BYTE $00,$00,$7E,$C6,$C6,$7E,$06,$FC
+493C C67E06FC
+4940 C0C0C0FC 883                 .BYTE $C0,$C0,$C0,$FC,$C6,$C6,$C6,$00
+4944 C6C6C600
+4948 18003818 884                 .BYTE $18,$00,$38,$18,$18,$18,$3C,$00
+494C 18183C00
+4950 06000606 885                 .BYTE $06,$00,$06,$06,$06,$06,$C6,$7C
+4954 0606C67C
+4958 C0CED8F0 886                 .BYTE $C0,$CE,$D8,$F0,$D8,$CC,$C6,$00
+495C D8CCC600
+4960 60606060 887                 .BYTE $60,$60,$60,$60,$60,$60,$7E,$00
+4964 60607E00
+4968 0000EEFE 888                 .BYTE $00,$00,$EE,$FE,$D6,$D6,$C6,$00
+496C D6D6C600
+4970 0000FCC6 889                 .BYTE $00,$00,$FC,$C6,$C6,$C6,$C6,$00
+4974 C6C6C600
+4978 00007CC6 890                 .BYTE $00,$00,$7C,$C6,$C6,$C6,$7C,$00
+497C C6C67C00
+              891
+4980 0000FCC6 892                 .BYTE $00,$00,$FC,$C6,$C6,$FC,$C0,$C0
+4984 C6FCC0C0
+4988 00007EC6 893                 .BYTE $00,$00,$7E,$C6,$C6,$7E,$06,$06
+498C C67E0606
+4990 0000FCC6 894                 .BYTE $00,$00,$FC,$C6,$C0,$C0,$C0,$00
+4994 C0C0C000
+4998 00007EC0 895                 .BYTE $00,$00,$7E,$C0,$FE,$06,$FC,$00
+499C FE06FC00
+49A0 3030FE30 896                 .BYTE $30,$30,$FE,$30,$30,$30,$1E,$00
+49A4 30301E00
+49A8 0000C6C6 897                 .BYTE $00,$00,$C6,$C6,$C6,$C6,$7E,$00
+49AC C6C67E00
+49B0 0000C6C6 898                 .BYTE $00,$00,$C6,$C6,$C6,$6C,$38,$00
+49B4 C66C3800
+49B8 C6C6D6D6 899                 .BYTE $C6,$C6,$D6,$D6,$D6,$FE,$C6,$00
+49BC D6FEC600
+49C0 0000C66C 900                 .BYTE $00,$00,$C6,$6C,$38,$6C,$C6,$00
+49C4 386CC600
+49C8 0000C6C6 901                 .BYTE $00,$00,$C6,$C6,$C6,$7E,$06,$FC
+49CC C67E06FC
+49D0 0000FE1C 902                 .BYTE $00,$00,$FE,$1C,$38,$70,$FE,$00
+49D4 3870FE00
+49D8 001E1818 903                 .BYTE $00,$1E,$18,$18,$18,$18,$1E,$00
+49DC 18181E00
+49E0 00406030 904                 .BYTE $00,$40,$60,$30,$18,$0C,$06,$00
+49E4 180C0600
+49E8 00781818 905                 .BYTE $00,$78,$18,$18,$18,$18,$78,$00
+49EC 18187800
+49F0 00081C36 906                 .BYTE $00,$08,$1C,$36,$63,$00,$00,$00
+49F4 63000000
+49F8 00000000 907                 .BYTE $00,$00,$00,$00,$FF,$00,$00,$00
+49FC FF000000
+              908
+4A00          909 LOGOMEM                                           ; 32 x 16 = 512 ($200) bytes
+4A00 00000000 910                 .BYTE $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+4A04 00000000
+4A08 00000000
+4A0C 00000000
+4A10 001800FC 911                 .BYTE $00,$18,$00,$FC,$00,$1F,$9F,$F0,$3F,$FF,$00,$0F,$C0,$F8,$1F,$00
+4A14 001F9FF0
+4A18 3FFF000F
+4A1C C0F81F00
+4A20 003C0078 912                 .BYTE $00,$3C,$00,$78,$00,$70,$F9,$E0,$0C,$3C,$00,$38,$70,$7C,$0E,$00
+4A24 0070F9E0
+4A28 0C3C0038
+4A2C 707C0E00
+4A30 00000000 913                 .BYTE $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+4A34 00000000
+4A38 00000000
+4A3C 00000000
+4A40 00000000 914                 .BYTE $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+4A44 00000000
+4A48 00000000
+4A4C 00000000
+4A50 003C0078 915                 .BYTE $00,$3C,$00,$78,$00,$E0,$38,$F0,$18,$3C,$00,$70,$38,$7C,$0E,$00
+4A54 00E038F0
+4A58 183C0070
+4A5C 387C0E00
+4A60 007E0078 916                 .BYTE $00,$7E,$00,$78,$01,$C0,$18,$78,$30,$3C,$00,$E0,$1C,$76,$0E,$00
+4A64 01C01878
+4A68 303C00E0
+4A6C 1C760E00
+4A70 00000000 917                 .BYTE $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+4A74 00000000
+4A78 00000000
+4A7C 00000000
+4A80 00000000 918                 .BYTE $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+4A84 00000000
+4A88 00000000
+4A8C 00000000
+4A90 007E0078 919                 .BYTE $00,$7E,$00,$78,$01,$C0,$18,$3C,$60,$3C,$00,$E0,$1C,$76,$0E,$00
+4A94 01C0183C
+4A98 603C00E0
+4A9C 1C760E00
+4AA0 00DF0078 920                 .BYTE $00,$DF,$00,$78,$03,$C0,$18,$1E,$C0,$3C,$01,$E0,$1E,$73,$0E,$00
+4AA4 03C0181E
+4AA8 C03C01E0
+4AAC 1E730E00
+4AB0 00000000 921                 .BYTE $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+4AB4 00000000
+4AB8 00000000
+4ABC 00000000
+4AC0 00000000 922                 .BYTE $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+4AC4 00000000
+4AC8 00000000
+4ACC 00000000
+4AD0 00CF0078 923                 .BYTE $00,$CF,$00,$78,$03,$C0,$00,$0F,$80,$3C,$01,$E0,$1E,$73,$0E,$00
+4AD4 03C0000F
+4AD8 803C01E0
+4ADC 1E730E00
+4AE0 018F8078 924                 .BYTE $01,$8F,$80,$78,$03,$C0,$00,$07,$80,$3C,$01,$E0,$1E,$71,$8E,$00
+4AE4 03C00007
+4AE8 803C01E0
+4AEC 1E718E00
+4AF0 00000000 925                 .BYTE $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+4AF4 00000000
+4AF8 00000000
+4AFC 00000000
+4B00 00000000 926                 .BYTE $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+4B04 00000000
+4B08 00000000
+4B0C 00000000
+4B10 01878078 927                 .BYTE $01,$87,$80,$78,$03,$C0,$00,$07,$80,$3C,$01,$E0,$1E,$71,$8E,$00
+4B14 03C00007
+4B18 803C01E0
+4B1C 1E718E00
+4B20 0307C078 928                 .BYTE $03,$07,$C0,$78,$03,$C0,$00,$07,$80,$3C,$01,$E0,$1E,$70,$CE,$00
+4B24 03C00007
+4B28 803C01E0
+4B2C 1E70CE00
+4B30 00000000 929                 .BYTE $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+4B34 00000000
+4B38 00000000
+4B3C 00000000
+4B40 00000000 930                 .BYTE $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+4B44 00000000
+4B48 00000000
+4B4C 00000000
+4B50 0303C078 931                 .BYTE $03,$03,$C0,$78,$03,$C0,$00,$07,$80,$3C,$01,$E0,$1E,$70,$CE,$00
+4B54 03C00007
+4B58 803C01E0
+4B5C 1E70CE00
+4B60 07FFE078 932                 .BYTE $07,$FF,$E0,$78,$01,$C0,$18,$07,$80,$3C,$00,$E0,$1C,$70,$6E,$00
+4B64 01C01807
+4B68 803C00E0
+4B6C 1C706E00
+4B70 00000000 933                 .BYTE $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+4B74 00000000
+4B78 00000000
+4B7C 00000000
+4B80 00000000 934                 .BYTE $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+4B84 00000000
+4B88 00000000
+4B8C 00000000
+4B90 0601E078 935                 .BYTE $06,$01,$E0,$78,$09,$C0,$18,$07,$80,$3C,$04,$E0,$1C,$70,$6E,$00
+4B94 09C01807
+4B98 803C04E0
+4B9C 1C706E00
+4BA0 0C01F078 936                 .BYTE $0C,$01,$F0,$78,$18,$E0,$30,$07,$80,$3C,$0C,$70,$38,$70,$3E,$00
+4BA4 18E03007
+4BA8 803C0C70
+4BAC 38703E00
+4BB0 00000000 937                 .BYTE $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+4BB4 00000000
+4BB8 00000000
+4BBC 00000000
+4BC0 00000000 938                 .BYTE $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+4BC4 00000000
+4BC8 00000000
+4BCC 00000000
+4BD0 1C00F078 939                 .BYTE $1C,$00,$F0,$78,$38,$70,$E0,$0F,$C0,$3C,$1C,$38,$70,$70,$3E,$00
+4BD4 3870E00F
+4BD8 C03C1C38
+4BDC 70703E00
+4BE0 3E01FCFF 940                 .BYTE $3E,$01,$FC,$FF,$F8,$1F,$80,$1F,$E0,$7F,$FC,$0F,$C0,$F8,$1E,$00
+4BE4 F81F801F
+4BE8 E07FFC0F
+4BEC C0F81E00
+4BF0 00000000 941                 .BYTE $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00
+4BF4 00000000
+4BF8 00000000
+4BFC 00000000
+              942
+4C00          943 SCRMEM                                            ; 40 x 24 = 960 ($3C0) bytes
+              944
+              945                 *= $2E0
+02E0 0030     946                 .WORD START
+
+SYMBOLS (SORTED BY NAME): 186
+
+=0000  BLK1
+=0070  BLK8
+ 31F3  CHAR.INIT
+ 4800  CHARSET
+=02F4  CHRBAS
+ 3467  CLR.PAGES
+=02C7  COLOR3
+=D016  COLPF0
+=D017  COLPF1
+=D018  COLPF2
+=D012  COLPM0
+=D013  COLPM1
+ 346E  CP1
+ 3438  DELAY.1
+ 3442  DELAY.12
+ 3447  DELAY.250
+ 343D  DELAY.6
+ 316C ?DL1
+ 3186  DL10
+ 3199  DL11
+ 31AC  DL12
+ 31BD  DL13
+ 3177  DL2
+ 31E2  DL99
+ 31CA  DLA
+=0080  DLI
+ 31D3  DLI.EXIT
+ 31E7  DLI.GR0.COL1
+ 31E8  DLI.GR0.COL2
+ 31E9  DLI.GR12.COL1
+ 31EA  DLI.GR12.COL2
+ 3161  DLI.HANDLER
+ 3151  DLI.INIT
+ 31E6  DLICOUNT
+ 3042  DLIST.INIT
+=D400  DMACTL
+ 3066  DS2
+ 3069  DS3
+ 3059  DSPLST
+ 344A  DY1
+ 3451  DY2
+ 3455  DY3
+ 32D8  FL2
+ 32DA  FL3
+=026F  GPRIOR
+=0002  GR0
+=0006  GR1
+=0004  GR12
+=000C  GR14
+=D01D  GRACTL
+ 3305  GRID.FADEIN
+=4C00  GRID.L00
+=4D68  GRID.L09
+=0042  GRIDBACK.COL
+=004B  GRIDFORE.COL
+=00CD  HORI.BAR
+=D004  HPOSM0
+=D005  HPOSM1
+=D006  HPOSM2
+=D007  HPOSM3
+=D000  HPOSP0
+=D001  HPOSP1
+=D002  HPOSP2
+=002A  JET.COL0
+=0017  JET.COL1
+=00E1  JET.YMAX
+=00B7  JET.YMIN
+ 319D  JP11
+=0041  JVB
+ 3435  L.FRAG
+ 3434  L.MASK
+=00CB  L.PTR
+ 33F0  L.YEND
+ 33EF  L.YSTART
+ 33EE  L.YTOP
+ 32C8  LC1
+ 331F  LC7
+=0040  LDM
+ 3037  LF
+ 33F9  LM1
+ 3415  LM2
+=001A  LOGO.COL0
+=001F  LOGO.COL1
+=0012  LOGO.COL2
+=0014  LOGO.COL3
+=0016  LOGO.COL4
+=0018  LOGO.COL5
+=001A  LOGO.COL6
+=001C  LOGO.COL7
+ 31EB  LOGO.COLTAB
+=4A00  LOGO.L00
+=4A30  LOGO.L01
+=4A40  LOGO.L02
+=4A70  LOGO.L03
+=4A80  LOGO.L04
+=4AB0  LOGO.L05
+=4AC0  LOGO.L06
+=4AF0  LOGO.L07
+=4B00  LOGO.L08
+=4B30  LOGO.L09
+=4B40  LOGO.L10
+=4B70  LOGO.L11
+=4B80  LOGO.L12
+=4BB0  LOGO.L13
+=4BC0  LOGO.L14
+=4BF0  LOGO.L15
+ 32D6  LOGO.SCROLLIN
+ 4A00  LOGOMEM
+ 3012  LOOP
+ 3274  MI0.DATA
+ 4300  MI0MEM
+=003C  MISS.COL
+=0002  MISS.DX
+=000F  MISS.LEN
+=0002  MISS.RELDX
+=0002  MISS.VY
+ 3437  MISS.Y
+=00A2  MISS.YMAX
+=0020  MISS.YMIN
+ 33BA  MISSILE.CLIPY
+ 335A ?MISSILE.CLR
+ 3369  MISSILE.CLRSHADOW
+ 33F1  MISSILE.CLRSHAPE
+ 3330  MISSILE.CTRL
+ 33A8  MISSILE.END
+ 33B9  MISSILE.EXIT
+ 333A ?MISSILE.INIT
+ 337C  MISSILE.MOVE
+ 3385  MISSILE.SET
+ 3394  MISSILE.SETSHADOW
+ 3409  MISSILE.SETSHAPE
+ 335A  MISSILE.UPDATE
+=D40E  NMIEN
+=02C0  PCOLR0
+=02C1  PCOLR1
+=02C2  PCOLR2
+ 3258  PL0.DATA
+ 4400  PL0MEM
+ 3266  PL1.DATA
+ 4500  PL1MEM
+ 4600  PL2MEM
+ 4000  PM
+ 31F9  PM.INIT
+ 3233  PM2
+ 324C  PM3
+=D407  PMBASE
+=D20A  RANDOM
+=0033  REDLINE.COL
+ 32C2  REDLINES.FADEIN
+ 3466  SAVE.DELAY
+ 32F6  SC3
+ 330F  SC6
+ 32B5  SCR.INIT
+ 4C00  SCRMEM
+=0230  SDLSTL
+=022F  SDMCTL
+=E45C  SETVBV
+=0000  SHADOW.COL
+=0003  SHADOW.DX
+=0004  SHADOW.DY
+=0075  SHIP.COL0
+=000F  SHIP.COL1
+=000E  SHIP.LEN
+ 3436  SHIP.X
+=007B  SHIP.XINIT
+=00B0  SHIP.YMAX
+=00A3  SHIP.YMIN
+ 33D1  SM1
+ 33DD  SM2
+ 33E9  SM3
+ 3000  START
+=0004  STICK.LEFT
+=0008  STICK.RGHT
+=0278  STICK0
+=0284  STRIG0
+ 32F4  TEXT.FADEIN
+ 30B1  TXTROW0
+ 30C5  TXTROW1
+ 30D9  TXTROW2
+ 3293  VB1
+ 32A2  VB2
+ 328D  VBI.HANDLER
+ 3283  VBI.INIT
+=0200  VDSLST
+=D40A  WSYNC
+=E462  XITVBV
+
+SYMBOLS (SORTED BY VALUE): 186
+
+=0000  BLK1
+=0000  SHADOW.COL
+=0002  GR0
+=0002  MISS.DX
+=0002  MISS.RELDX
+=0002  MISS.VY
+=0003  SHADOW.DX
+=0004  GR12
+=0004  SHADOW.DY
+=0004  STICK.LEFT
+=0006  GR1
+=0008  STICK.RGHT
+=000C  GR14
+=000E  SHIP.LEN
+=000F  MISS.LEN
+=000F  SHIP.COL1
+=0012  LOGO.COL2
+=0014  LOGO.COL3
+=0016  LOGO.COL4
+=0017  JET.COL1
+=0018  LOGO.COL5
+=001A  LOGO.COL0
+=001A  LOGO.COL6
+=001C  LOGO.COL7
+=001F  LOGO.COL1
+=0020  MISS.YMIN
+=002A  JET.COL0
+=0033  REDLINE.COL
+=003C  MISS.COL
+=0040  LDM
+=0041  JVB
+=0042  GRIDBACK.COL
+=004B  GRIDFORE.COL
+=0070  BLK8
+=0075  SHIP.COL0
+=007B  SHIP.XINIT
+=0080  DLI
+=00A2  MISS.YMAX
+=00A3  SHIP.YMIN
+=00B0  SHIP.YMAX
+=00B7  JET.YMIN
+=00CB  L.PTR
+=00CD  HORI.BAR
+=00E1  JET.YMAX
+=0200  VDSLST
+=022F  SDMCTL
+=0230  SDLSTL
+=026F  GPRIOR
+=0278  STICK0
+=0284  STRIG0
+=02C0  PCOLR0
+=02C1  PCOLR1
+=02C2  PCOLR2
+=02C7  COLOR3
+=02F4  CHRBAS
+ 3000  START
+ 3012  LOOP
+ 3037  LF
+ 3042  DLIST.INIT
+ 3059  DSPLST
+ 3066  DS2
+ 3069  DS3
+ 30B1  TXTROW0
+ 30C5  TXTROW1
+ 30D9  TXTROW2
+ 3151  DLI.INIT
+ 3161  DLI.HANDLER
+ 316C ?DL1
+ 3177  DL2
+ 3186  DL10
+ 3199  DL11
+ 319D  JP11
+ 31AC  DL12
+ 31BD  DL13
+ 31CA  DLA
+ 31D3  DLI.EXIT
+ 31E2  DL99
+ 31E6  DLICOUNT
+ 31E7  DLI.GR0.COL1
+ 31E8  DLI.GR0.COL2
+ 31E9  DLI.GR12.COL1
+ 31EA  DLI.GR12.COL2
+ 31EB  LOGO.COLTAB
+ 31F3  CHAR.INIT
+ 31F9  PM.INIT
+ 3233  PM2
+ 324C  PM3
+ 3258  PL0.DATA
+ 3266  PL1.DATA
+ 3274  MI0.DATA
+ 3283  VBI.INIT
+ 328D  VBI.HANDLER
+ 3293  VB1
+ 32A2  VB2
+ 32B5  SCR.INIT
+ 32C2  REDLINES.FADEIN
+ 32C8  LC1
+ 32D6  LOGO.SCROLLIN
+ 32D8  FL2
+ 32DA  FL3
+ 32F4  TEXT.FADEIN
+ 32F6  SC3
+ 3305  GRID.FADEIN
+ 330F  SC6
+ 331F  LC7
+ 3330  MISSILE.CTRL
+ 333A ?MISSILE.INIT
+ 335A ?MISSILE.CLR
+ 335A  MISSILE.UPDATE
+ 3369  MISSILE.CLRSHADOW
+ 337C  MISSILE.MOVE
+ 3385  MISSILE.SET
+ 3394  MISSILE.SETSHADOW
+ 33A8  MISSILE.END
+ 33B9  MISSILE.EXIT
+ 33BA  MISSILE.CLIPY
+ 33D1  SM1
+ 33DD  SM2
+ 33E9  SM3
+ 33EE  L.YTOP
+ 33EF  L.YSTART
+ 33F0  L.YEND
+ 33F1  MISSILE.CLRSHAPE
+ 33F9  LM1
+ 3409  MISSILE.SETSHAPE
+ 3415  LM2
+ 3434  L.MASK
+ 3435  L.FRAG
+ 3436  SHIP.X
+ 3437  MISS.Y
+ 3438  DELAY.1
+ 343D  DELAY.6
+ 3442  DELAY.12
+ 3447  DELAY.250
+ 344A  DY1
+ 3451  DY2
+ 3455  DY3
+ 3466  SAVE.DELAY
+ 3467  CLR.PAGES
+ 346E  CP1
+ 4000  PM
+ 4300  MI0MEM
+ 4400  PL0MEM
+ 4500  PL1MEM
+ 4600  PL2MEM
+ 4800  CHARSET
+=4A00  LOGO.L00
+ 4A00  LOGOMEM
+=4A30  LOGO.L01
+=4A40  LOGO.L02
+=4A70  LOGO.L03
+=4A80  LOGO.L04
+=4AB0  LOGO.L05
+=4AC0  LOGO.L06
+=4AF0  LOGO.L07
+=4B00  LOGO.L08
+=4B30  LOGO.L09
+=4B40  LOGO.L10
+=4B70  LOGO.L11
+=4B80  LOGO.L12
+=4BB0  LOGO.L13
+=4BC0  LOGO.L14
+=4BF0  LOGO.L15
+=4C00  GRID.L00
+ 4C00  SCRMEM
+=4D68  GRID.L09
+=D000  HPOSP0
+=D001  HPOSP1
+=D002  HPOSP2
+=D004  HPOSM0
+=D005  HPOSM1
+=D006  HPOSM2
+=D007  HPOSM3
+=D012  COLPM0
+=D013  COLPM1
+=D016  COLPF0
+=D017  COLPF1
+=D018  COLPF2
+=D01D  GRACTL
+=D20A  RANDOM
+=D400  DMACTL
+=D407  PMBASE
+=D40A  WSYNC
+=D40E  NMIEN
+=E45C  SETVBV
+=E462  XITVBV
