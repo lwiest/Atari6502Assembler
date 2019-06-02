@@ -1,4 +1,4 @@
-﻿# Atari 6502 Assembler
+# Atari 6502 Assembler
 
 Atari 6502 Assembler is an open-source 6502 assembler for the Atari 8-bit Home Computer System, written in Java.
 
@@ -12,45 +12,29 @@ Enjoy! -- Lorenz
 
 ## Table of Contents
 
-* [Quick Start](#quick-start)
 * [Getting Started](#getting-started)
 * [Command-Line Arguments](#command-line-arguments)
 * [Command-Line Options](#command-line-options)
 * [Assemble a Hello World Sample](#assemble-a-hello-world-sample)
 * [Samples](#samples)
 * [Documentation](#documentation)
+* [Build Instructions](#build-instructions)
 
-## Quick Start
-
-I have prepared a runnable JAR file for you.
-
-**Prerequisites:** You have Java SDK 5 (or higher) installed on your system.
-
-1. Download this project's ZIP file from GitHub.
-2. Extract the file `Atari6502Assembler.jar` from the ZIP file to a folder.
-3. Open a command prompt in this folder and enter:
-   ```
-   > java -jar Atari6502Assembler
-   ```
-   _(This runs Atari 6502 Assembler and lists command-line options.)_
-   
 ## Getting Started
 
-**Prerequisites:** You have Java SDK 5 (or higher) installed on your system.
+I have prepared for you a [release](https://github.com/lwiest/Atari6502Assembler/releases/latest) of Atari6502Assembler.
 
-Download this project's ZIP file from GitHub and unzip it to a temporary folder ("root" folder).
+### Prerequisites
+* You have installed a Java SDK 5 (or higher) on your system.
 
-**To work with the Atari 6502 Assembler source code in your Eclipse IDE**, import the `Atari6502Assembler` project in your Eclipse IDE from the root folder, choosing as import source _General > Existing Projects into Workspace_.
-
-**To compile Atari 6502 Assembler into a convenient JAR file** (Windows only), open a command prompt in the root folder and enter (`%JAVA_HOME%` must point to the installation folder of your Java SDK):
+### Instructions
+1. Download [Atari6502Assembler.jar](https://github.com/lwiest/Atari6502Assembler/releases/download/v2.0/Atari6502Assembler.jar) to a folder.
+2. Open a command prompt in that folder and enter:
+   ``` 
+   java -jar Atari6502Assembler.jar
+   ```
+This runs Atari 6502 Assembler and lists command-line options:
 ```
-> makejar
-```
-This produces the `Atari6502Assembler.jar` file.
-
-**To run Atari 6502 Assembler and get command-line options**, enter
-```
-> java -jar Atari6502Assembler.jar
    _  _            _    __ ___  __ ___     _                     _    _
   /_\| |_ __ _ _ _(_)  / /| __|/  \_  )   /_\   ______ ___ _ __ | |__| |___ _ _
  / _ \  _/ _` | '_| | / _ \__ \ () / /   / _ \ (_-<_-</ -_) '  \| '_ \ | -_) '_|
@@ -215,7 +199,7 @@ and writes the following object code to file `HELLOWORLD.EXE`:
 0020 | 03 20 56 E4 60 7D 48 45 4C 4C 4F 2C 20 57 4F 52 |. V.`}HELLO, WOR|
 0030 | 4C 44 21 9B E0 02 E1 02 00 06                   |LD!.......|
 ```
-You can run the object code with your Atari 8-bit Home Computer System emulator (I use Atari800Win PLus). It prints the message "HELLO, WORLD!" to the screen (see [Samples](#samples)):
+You can run the object code with your Atari 8-bit Home Computer System emulator (I use Atari800Win PLus). It prints the message "HELLO, WORLD!" to the screen.
 
 ## Samples
 
@@ -227,19 +211,19 @@ The folder [samples](samples) contains some sample 6502 assembly language progra
 
 ### HELLOWORLD
 
-![Screenshot HELLOWORLD.EXE](samples/HELLOWORLD.GIF "Screenshot HELLOWORLD.EXE")
+![Screenshot HELLOWORLD.EXE](samples/HELLOWORLD/HELLOWORLD.GIF "Screenshot HELLOWORLD.EXE")
 
 Prints the message "HELLO, WORLD!" to the screen.
 
 ### ACTIVISION
 
-![Screenshot ACTIVISION.EXE](samples/ACTIVISION.GIF "Screenshot ACTIVISION.EXE")
+![Screenshot ACTIVISION.EXE](samples/HELLOWORLD/ACTIVISION.GIF "Screenshot ACTIVISION.EXE")
 
 Recreates the scrolling bottom banner of Activision games.
 
 ### ALCYLON
 
-![Screenshot ALCYLON.EXE](samples/ALCYLON.GIF "Screenshot ALCYLON.EXE")
+![Screenshot ALCYLON.EXE](samples/HELLOWORLD/ALCYLON.GIF "Screenshot ALCYLON.EXE")
 
 The intro of a vertically scrolling spaceship game I wrote in 1987 (the intro, not the game ;-). After the intro has finished you can move the spaceship left and right with the joystick and fire photon torpedoes with the joystick button. I refactored and polished the old source code and re-assembled it with Atari 6502 Assembler (It's nice to write assembly language source code in lines of more than 40 characters :-).
 
@@ -391,3 +375,17 @@ Generates individual bytes of object code. For expressions, the low order byte o
 Generates individual 16-bit words of object code. First, the low order byte of the expression value is added to the object code, then the high order byte of the expression value is added to the object code.  
 
 **Example:** `.WORD 1,-1,$1234` produces `01 00 FF FF 34 12`
+
+## Build Instructions
+
+**Prerequisites:** You have Java SDK 5 (or higher) installed on your system.
+
+Download this project's ZIP file from GitHub and unzip it to a temporary folder ("root" folder).
+
+**To work with the Atari 6502 Assembler source code in your Eclipse IDE**, import the `Atari6502Assembler` project in your Eclipse IDE from the root folder, choosing as import source _General > Existing Projects into Workspace_.
+
+**To compile Atari 6502 Assembler into a convenient JAR file** (Windows only), open a command prompt in the root folder and enter (`%JAVA_HOME%` must point to the installation folder of your Java SDK):
+```
+> makejar
+```
+This produces the `Atari6502Assembler.jar` file.
