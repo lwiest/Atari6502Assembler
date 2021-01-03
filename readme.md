@@ -27,6 +27,7 @@ Enjoy! &mdash; Lorenz
 ### Instructions
 1. Download [Atari6502Assembler.jar](https://github.com/lwiest/Atari6502Assembler/releases/download/v2.0/Atari6502Assembler.jar) to a folder.
 2. Open a command prompt in that folder and enter
+
    ``` 
    java -jar Atari6502Assembler.jar
    ```
