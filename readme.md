@@ -6,9 +6,7 @@ I wrote this program mainly to assemble my [reverse-engineered, complete, and fu
 
 The accepted assembly language source code format is similar to the format of MAC/65 for the Atari 8-bit Home Computer System. 
 
-The Atari 6502 Assembler source code is available under the MIT license.
-
-Enjoy! -- Lorenz
+Enjoy! &mdash; Lorenz
 
 ## Table of Contents
 
@@ -19,46 +17,45 @@ Enjoy! -- Lorenz
 * [Samples](#samples)
 * [Documentation](#documentation)
 * [Build Instructions](#build-instructions)
+* [License](#license)
 
 ## Getting Started
 
-I have prepared for you a [release](https://github.com/lwiest/Atari6502Assembler/releases/latest) of Atari6502Assembler.
-
 ### Prerequisites
-* You have installed a Java SDK 5 (or higher) on your system.
+* You have installed Java SDK 5 (or higher) on your system.
 
 ### Instructions
 1. Download [Atari6502Assembler.jar](https://github.com/lwiest/Atari6502Assembler/releases/download/v2.0/Atari6502Assembler.jar) to a folder.
-2. Open a command prompt in that folder and enter:
+2. Open a command prompt in that folder and enter
    ``` 
    java -jar Atari6502Assembler.jar
    ```
-This runs Atari 6502 Assembler and lists command-line options:
-```
-   _  _            _    __ ___  __ ___     _                     _    _
-  /_\| |_ __ _ _ _(_)  / /| __|/  \_  )   /_\   ______ ___ _ __ | |__| |___ _ _
- / _ \  _/ _` | '_| | / _ \__ \ () / /   / _ \ (_-<_-</ -_) '  \| '_ \ | -_) '_|
-/_/ \_\__\__,_|_| |_| \___/___/\__/___| /_/ \_\/__/__/\___|_|_|_|_.__/_|___|_|
+   This runs Atari 6502 Assembler and lists command-line options:
+   ```
+      _  _            _    __ ___  __ ___     _                     _    _
+     /_\| |_ __ _ _ _(_)  / /| __|/  \_  )   /_\   ______ ___ _ __ | |__| |___ _ _
+    / _ \  _/ _` | '_| | / _ \__ \ () / /   / _ \ (_-<_-</ -_) '  \| '_ \ | -_) '_|
+   /_/ \_\__\__,_|_| |_| \___/___/\__/___| /_/ \_\/__/__/\___|_|_|_|_.__/_|___|_|
 
-Version 2.0 (08-MAR-2018) by Lorenz Wiest
+   Version 2.0 (08-MAR-2018) by Lorenz Wiest
 
-Usage: java Atari6502Assembler [<options>] <infile> [<outfile>] [> <listfile>]
+   Usage: java Atari6502Assembler [<options>] <infile> [<outfile>] [> <listfile>]
 
-<options> (default values in {})
-  -showHeader=true|false      | If true then print header line {true}
-  -showObject=true|false      | If true then print object code {true}
-  -showLineNumbers=true|false | If true then print line numbers {true}
-  -showSymbolList=true|false  | If true then print symbol list {true}
-  -lineNumberStart=<n>        | Set start line number {1}
-  -lineNumberInc=<n>          | Set line number increment {1}
-  -padLineNumbers=true|false  | If true then pad line numbers with "0" else with " " {true}
-  -instructionPos=<n>         | Set column number of instructions {16}
-  -labelExprPos=<n>           | Set column number of label expressions {16}
-  -commentPos=<n>             | Set column number of comments. Ignored if 0. {0}
-<infile>   - 6502 assembly language source code file
-<outfile>  - Assembly output binary file
-<listfile> - Assembly output listing file
-```
+   <options> (default values in {})
+     -showHeader=true|false      | If true then print header line {true}
+     -showObject=true|false      | If true then print object code {true}
+     -showLineNumbers=true|false | If true then print line numbers {true}
+     -showSymbolList=true|false  | If true then print symbol list {true}
+     -lineNumberStart=<n>        | Set start line number {1}
+     -lineNumberInc=<n>          | Set line number increment {1}
+     -padLineNumbers=true|false  | If true then pad line numbers with "0" else with " " {true}
+     -instructionPos=<n>         | Set column number of instructions {16}
+     -labelExprPos=<n>           | Set column number of label expressions {16}
+     -commentPos=<n>             | Set column number of comments. Ignored if 0. {0}
+   <infile>   - 6502 assembly language source code file
+   <outfile>  - Assembly output binary file
+   <listfile> - Assembly output listing file
+   ```
 
 ## Command-Line Arguments
 
@@ -85,7 +82,7 @@ Option       | Values               | Description
 
 ## Assemble a Hello World Sample
 
-To assemble the sample program `HELLOWORLD.ASM` in folder [samples](samples) 
+To assemble the following sample program `HELLOWORLD.ASM` (in folder [samples](samples)):
 ```
 IOCB.EDTR = $00
 PUTREC    = $09
@@ -245,15 +242,15 @@ Symbol | Description
 
 Atari 6502 Assembler breaks down each line of the assembly language source code into the following elements:
 
-\[\<linenumber\>\<whitespace\>\] \[\<sourceline\>\]
+\[\<linenumber\>\<one_whitespace\>\] \[\<sourceline\>\]
 
 with
 
-**\<sourceline\>** ::= \<label\>\|\<whitespace\> \[\<instruction\> \[\<operand\>\]\] \| \[\<directive\>\] \[\<comment\>\]
+**\<sourceline\>** ::= \<label\>\|\<one_whitespace\> \[\<instruction\> \[\<operand\>\]\] \| \[\<directive\>\] \[\<comment\>\]
 
 All elements may be separated by an arbitrary number of whitespace characters â€“ with **one exception**: There must be **exactly one whitespace character** between a line number and the source line.
 
-**Examples:**
+**Examples**
 ```
 100 START = $3000 ; OK: 1 whitespace between line number and label START
 110  *= START     ; OK: 2 whitespaces between line number and directive *=
@@ -267,7 +264,7 @@ All elements may be separated by an arbitrary number of whitespace characters â€
 
 **\<linenumber\>**	- A line number between `0`..`99999`, which is discarded. It is accepted for compatibility reasons to read assembly language source code with leading line numbers.
 
-**\<whitespace\>**	- One whitespace character.
+**\<one_whitespace\>**	- One whitespace character.
 
 **\<label\>** 	- A label starts with a letter `A`..`Z` or `a`..`z`, an at-sign (`@`), a question mark (`?`), or a colon (`:`). The remaining characters may be letters `A`..`Z` or `a`..`z`, digits `0`..`9`, an at-sign (`@`), a question mark (`?`), a colon (`:`), or a period (`.`).
 
@@ -378,14 +375,22 @@ Generates individual 16-bit words of object code. First, the low order byte of t
 
 ## Build Instructions
 
-**Prerequisites:** You have Java SDK 5 (or higher) installed on your system.
+### Prerequisites
+* You have Java SDK 5 (or higher) installed on your system.
 
-Download this project's ZIP file from GitHub and unzip it to a temporary folder ("root" folder).
+### Instructions
+1. Download this project's ZIP file from GitHub and unzip it to a temporary folder.
 
-**To work with the Atari 6502 Assembler source code in your Eclipse IDE**, import the `Atari6502Assembler` project in your Eclipse IDE from the root folder, choosing as import source _General > Existing Projects into Workspace_.
+2. **To work with the Atari 6502 Assembler source code in your Eclipse IDE**, import the `Atari6502Assembler` project in your Eclipse IDE from the temporary folder, choosing as import source _General > Existing Projects into Workspace_.
 
-**To compile Atari 6502 Assembler into a convenient JAR file** (Windows only), open a command prompt in the root folder and enter (`%JAVA_HOME%` must point to the installation folder of your Java SDK):
-```
-makejar
-```
-This produces the `Atari6502Assembler.jar` file.
+3. **To compile Atari 6502 Assembler into a convenient JAR file** (Windows only), open a command prompt in the temporary folder and enter
+   ```
+   makejar
+   ```
+   This produces the `Atari6502Assembler.jar` file, containing the compiled Atari 6502 Assembler.
+
+   (Note that the environment variable JAVA_HOME must point to the installation folder of your Java SDK.)
+
+## License
+
+This project is available under the MIT license.
