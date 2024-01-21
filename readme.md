@@ -224,7 +224,7 @@ Recreates the scrolling bottom banner of Activision games.
 
 ![Screenshot ALCYLON.EXE](samples/ALCYLON/ALCYLON.GIF "Screenshot ALCYLON.EXE")
 
-Run the intro of a vertically scrolling spaceship game I wrote in 1987 (the intro, not the game ;-). After the intro has finished you can move the spaceship left and right with the joystick and fire photon torpedoes with the joystick button. I refactored and polished the old source code and re-assembled it with _Atari 6502 Assembler_ (It's nice to write assembly language source code in lines of more than 40 characters :-).
+Runs the intro of a vertically scrolling spaceship game I wrote in 1987 (the intro, not the game ;-). After the intro has finished you can move the spaceship left and right with the joystick and fire photon torpedoes with the joystick button. I refactored and polished the old source code and re-assembled it with _Atari 6502 Assembler_ (It's nice to write assembly language source code in lines of more than 40 characters :-).
 
 ## Documentation
 
@@ -347,7 +347,7 @@ Precedence | Operators
 
 #### Origin (\*=)
 
-**Syntax:** `*=` \<expression\>
+**Syntax:** `*=` `\<expression\>`
 
 Sets the assembler&rsquo;s program counter to the value of the expression.  
 
@@ -355,7 +355,7 @@ Sets the assembler&rsquo;s program counter to the value of the expression.
 
 #### Label Expression (=)
 
-**Syntax:** \<label\> `=` \<expression\>
+**Syntax:** `\<label\>` `=` `\<expression\>`
 
 Assigns the value of an expression to a label.  
 
