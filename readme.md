@@ -27,11 +27,10 @@ Enjoy! &mdash; Lorenz
 ### Instructions
 1. Download [Atari6502Assembler.jar](https://github.com/lwiest/Atari6502Assembler/releases/download/v2.0/Atari6502Assembler.jar) to a folder.
 2. Open a command prompt in that folder and enter
-
    ``` 
    java -jar Atari6502Assembler.jar
    ```
-   This runs Atari 6502 Assembler and lists command-line options:
+   This runs _Atari 6502 Assembler_ and lists command-line options:
    ```
       _  _            _    __ ___  __ ___     _                     _    _
      /_\| |_ __ _ _ _(_)  / /| __|/  \_  )   /_\   ______ ___ _ __ | |__| |___ _ _
