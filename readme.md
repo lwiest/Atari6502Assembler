@@ -13,7 +13,7 @@ Enjoy! &mdash; Lorenz
 * [Getting Started](#getting-started)
 * [Command-Line Arguments](#command-line-arguments)
 * [Command-Line Options](#command-line-options)
-* [Assembling a "Hello World!" Sample](#assemble-a-hello-world-sample)
+* [Assembling a "Hello World!" Sample](#assembling-a-hello-world-sample)
 * [Samples](#samples)
 * [Documentation](#documentation)
 * [Build Instructions](#build-instructions)
@@ -82,7 +82,7 @@ Option       | Values               | Description
 `labelExprPos` | `0`, `1`, `2`, ... | Sets the column number at which label expressions are printed in the assembly output listing. This number is a positive integer. Column number 0 is the column of the first label character (default: `16`).
 `commentPos` | `0`, `1`, `2`, ... | Sets the column number at which comments are printed in the assembly output listing. This number is a positive integer or 0. If this number is 0, then this option is ignored and comments are not rearranged in the assembly output listing. Comments at column number 0 are never rearranged in the assembly output listing. Column number 0 is the column of the first label character (default: `0`).
 
-## Assembling a &ldquo;Hello World!&rdquo; Sample
+## Assembling a "Hello World!" Sample
 
 To assemble the following sample program `HELLOWORLD.ASM` (in folder [samples](samples)):
 ```
