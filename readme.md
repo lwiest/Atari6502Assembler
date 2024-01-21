@@ -347,7 +347,7 @@ Precedence | Operators
 
 #### Origin (\*=)
 
-**Syntax:** `*=` `\<expression\>`
+**Syntax:** `*=` \<expression\>
 
 Sets the assembler&rsquo;s program counter to the value of the expression.  
 
@@ -355,7 +355,7 @@ Sets the assembler&rsquo;s program counter to the value of the expression.
 
 #### Label Expression (=)
 
-**Syntax:** `\<label\>` `=` `\<expression\>`
+**Syntax:** \<label\> `=` \<expression\>
 
 Assigns the value of an expression to a label.  
 
