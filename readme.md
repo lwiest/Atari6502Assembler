@@ -237,7 +237,7 @@ The accepted assembly language source code format is similar to the format of MA
 Symbol | Description
 :-----:|:-----------
 \[ \]  | Content enclosed in square brackets (\[ \]) is optional.
-\*     | Optional content followed by an asterisk (\*) may be repeated several times.
+\*     | Content followed by an asterisk (\*) may be repeated zero, one, or more times.
 \|     | Indicates a choice of the content either to the left or to the right of the bar (\|).
 
 ### Assembler Input
