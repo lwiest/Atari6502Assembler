@@ -1,6 +1,6 @@
 # Atari 6502 Assembler
 
-Atari 6502 Assembler is an open-source 6502 assembler for the Atari 8-bit Home Computer System, written in Java.
+_Atari 6502 Assembler_ is an open-source 6502 assembler for the Atari 8-bit Home Computer System, written in Java.
 
 I wrote this program mainly to assemble my [reverse-engineered, complete, and fully documented assembly language source code of STAR RAIDERS](https://github.com/lwiest/StarRaiders).
 
@@ -13,7 +13,7 @@ Enjoy! &mdash; Lorenz
 * [Getting Started](#getting-started)
 * [Command-Line Arguments](#command-line-arguments)
 * [Command-Line Options](#command-line-options)
-* [Assemble a Hello World Sample](#assemble-a-hello-world-sample)
+* [Assembling a "Hello World!" Sample](#assemble-a-hello-world-sample)
 * [Samples](#samples)
 * [Documentation](#documentation)
 * [Build Instructions](#build-instructions)
@@ -22,7 +22,7 @@ Enjoy! &mdash; Lorenz
 ## Getting Started
 
 ### Prerequisites
-* You have installed Java SDK 5 (or higher) on your system.
+* You have installed Java JDK (or SDK) 5 or higher on your system.
 
 ### Instructions
 1. Download [Atari6502Assembler.jar](https://github.com/lwiest/Atari6502Assembler/releases/download/v2.0/Atari6502Assembler.jar) to a folder.
@@ -72,16 +72,16 @@ Option       | Values               | Description
 :------------|:--------------------:|:-----------
 `showHeader` | `true`,&nbsp;`false` | If `true` then print a header line (containing the date of the assembly) at the start of the assembly output listing (default: `true`).
 `showObject` | `true`,&nbsp;`false` | If `true` then print the bytes of the object code, including the corresponding memory addresses, at the start of each line of the assembly output listing (default: `true`).
-`showLineNumbers` | `true`,&nbsp;`false` | If `true` then number the lines of the assembly language source code in the assembly output listing (default: `true`). See also `lineNumberStart`, `lineNumberInc`, and `padLineNumbers`.
+`showLineNumbers` | `true`,&nbsp;`false` | If `true` then print a line number at the beginning of each line of the assembly language source code in the assembly output listing (default: `true`). See also `lineNumberStart`, `lineNumberInc`, and `padLineNumbers`.
 `showSymbolList` | `true`,&nbsp;`false` | If `true` then print the symbol list at the end of the assembly output listing (default: `true`).
-`lineNumberStart` | `0`, `1`, `2`, ... | Sets the first line number of the assembly language source code. This number is a positive integer (default: `1`). See also `showLineNumbers`.
+`lineNumberStart` | `0`, `1`, `2`, ... | Sets the first line number of the assembly language source code. This number is a positive integer or 0 (default: `1`). See also `showLineNumbers`.
 `lineNumberInc` | `1`, `2`, `3`, ... | Sets the line number increment for each line of the assembly language source code. This number is a positive integer (default: `1`). See also `showLineNumbers`.
-`padLineNumbers` | `true`,&nbsp;`false` | If `true` then pad the line numbers with `0`, if `false` then pad the line numbers with " " (default: `true`). See also `showLineNumbers`.
-`instructionPos` | `0`, `1`, `2`, ... | Sets the column number at which instructions are printed in the assembly output listing. This number is a positive integer. Column number 0 is the column of the first label character (default: `16`).
+`padLineNumbers` | `true`,&nbsp;`false` | If `true` then pad the line numbers with `0`, if `false` then pad the line numbers with space characters (default: `true`). See also `showLineNumbers`.
+`instructionPos` | `0`, `1`, `2`, ... | Sets the column number at which instructions are printed in the assembly output listing. This number is a positive integer or 0. Column number 0 is the column of the first label character (default: `16`).
 `labelExprPos` | `0`, `1`, `2`, ... | Sets the column number at which label expressions are printed in the assembly output listing. This number is a positive integer. Column number 0 is the column of the first label character (default: `16`).
-`commentPos` | `0`, `1`, `2`, ... | Sets the column number at which comments are printed in the assembly output listing. This number is a positive integer. If this number is 0, then this option is ignored and comments are not rearranged in the assembly output listing. Comments at column number 0 are never rearranged in the assembly output listing. Column number 0 is the column of the first label character (default: `0`).
+`commentPos` | `0`, `1`, `2`, ... | Sets the column number at which comments are printed in the assembly output listing. This number is a positive integer or 0. If this number is 0, then this option is ignored and comments are not rearranged in the assembly output listing. Comments at column number 0 are never rearranged in the assembly output listing. Column number 0 is the column of the first label character (default: `0`).
 
-## Assemble a Hello World Sample
+## Assembling a &ldquo;Hello World!&rdquo; Sample
 
 To assemble the following sample program `HELLOWORLD.ASM` (in folder [samples](samples)):
 ```
@@ -121,7 +121,7 @@ enter
 ```
 java -jar Atari6502Assembler samples/HELLOWORLD/HELLOWORLD.ASM HELLOWORLD.EXE
 ```
-Atari 6502 Assembler prints the following assembly output listing to the console:
+_Atari 6502 Assembler_ prints the following assembly output listing to the console:
 ```
 Atari 6502 Assembler - Assembly Date: 14-Aug-2016
 
@@ -223,11 +223,11 @@ Recreates the scrolling bottom banner of Activision games.
 
 ![Screenshot ALCYLON.EXE](samples/ALCYLON/ALCYLON.GIF "Screenshot ALCYLON.EXE")
 
-The intro of a vertically scrolling spaceship game I wrote in 1987 (the intro, not the game ;-). After the intro has finished you can move the spaceship left and right with the joystick and fire photon torpedoes with the joystick button. I refactored and polished the old source code and re-assembled it with Atari 6502 Assembler (It's nice to write assembly language source code in lines of more than 40 characters :-).
+Run the intro of a vertically scrolling spaceship game I wrote in 1987 (the intro, not the game ;-). After the intro has finished you can move the spaceship left and right with the joystick and fire photon torpedoes with the joystick button. I refactored and polished the old source code and re-assembled it with _Atari 6502 Assembler_ (It's nice to write assembly language source code in lines of more than 40 characters :-).
 
 ## Documentation
 
-Atari 6502 Assembler assembles 6502 assembly language source code into an object file for the Atari 8-bit Home Computer System.
+_Atari 6502 Assembler_ assembles 6502 assembly language source code into an object file for the Atari 8-bit Home Computer System.
 
 The accepted assembly language source code format is similar to the format of MAC/65 for the Atari 8-bit Home Computer System. 
 
@@ -241,7 +241,7 @@ Symbol | Description
 
 ### Assembler Input
 
-Atari 6502 Assembler breaks down each line of the assembly language source code into the following elements:
+_Atari 6502 Assembler_ breaks down each line of the assembly language source code into the following elements:
 
 \[\<linenumber\>\<one_whitespace\>\] \[\<sourceline\>\]
 
@@ -271,13 +271,13 @@ All elements may be separated by an arbitrary number of whitespace characters â€
 
 When a label starts with a question mark (`?`) or a colon (`:`), then it is not included in the symbol table that is printed at the end of the assembly output listing.
 
-Labels are case-insensitive, for example, label `START` is the same as label `start`.
+Labels are case-insensitive. For example, label `START` is the same as label `start`.
 
 **Note:** Colons in labels are not supported by MAC/65.
 
 **\<instruction\>**	- One of the following 6502 instructions: `ADC`, `AND`, `ASL`, `BCC`, `BCS`, `BEQ`, `BIT`, `BMI`, `BNE`, `BPL`, `BRK`, `BVC`, `BVS`, `CLC`, `CLD`, `CLI`, `CLV`, `CMP`, `CPX`, `CPY`, `DEC`, `DEX`, `DEY`, `EOR`, `INC`, `INX`, `INY`, `JMP`, `JSR`, `LDA`, `LDX`, `LDY`, `LSR`, `NOP`, `ORA`, `PHA`, `PHP`, `PLA`, `PLP`, `ROL`, `ROR`, `RTI`, `RTS`, `SBC`, `SEC`, `SED`, `SEI`, `STA`, `STX`, `STY`, `TAX`, `TAY`, `TSX`, `TXA`, `TXS`, `TYA`.
 
-Instructions are case-insensitive.
+Instructions are case-insensitive. For example, instruction `LDA` is the same as instruction `lda`.
 
 **\<operand\>**	- The operand of the instruction. An operand has one of the following formats:
 
@@ -295,12 +295,14 @@ Indexed indirect    | `(`\<argument\>`,X)`                  | `LDA ($80,X)`
 Indirect indexed    | `(`\<argument\>`),Y`                  | `LDA ($80),Y` 
 Relavtive           | \<argument\>                          | `BNE $03` 
 
+Instructions often work with only a subset of operands.
+
 **\<argument\>** 	- An argument is one of the following:
 
 Argument             | Examples     | Description
 :--------------------|:-------------|:-----------
 Decimal constant     | `1`, `1234`      | A 16-bit integer number, uses digits `0`..`9`
-Hexadecimal constant | `$1`, `$FFFF`    | A 16-bit integer number, starts with a dollar sign (`$`), followed by 1 to 4 characters out of `0`..`9`, `A`..`F`, and `a`..`z`. Hexadecimal constants are case-insensitive.
+Hexadecimal constant | `$1`, `$FFFF`    | A 16-bit integer number, starts with a dollar sign (`$`), followed by 1 to 4 characters out of `0`..`9`, `A`..`F`, and `a`..`z`. Hexadecimal constants are case-insensitive. For example, hexadecimal constant `$FF` is the same as hexadecimal constant `$ff`.
 Binary constant      | `%1`, `%1010`    | A 16-bit integer number, starts with a percent sign (`%`), followed by 1 to 16 characters out of `0`..`1`. **Note:** Binary constants are not supported by MAC/65.
 Character constant   | `'A`           | A single quote (`'`), followed by an ASCII character
 Label                | `START`, `FOO`   | See above
@@ -346,7 +348,7 @@ Precedence | Operators
 
 **Syntax:** `*=` \<expression\>
 
-Sets the assembler's program counter to the value of the expression.  
+Sets the assembler&rsquo;s program counter to the value of the expression.  
 
 **Example:** `*= $1000` sets the program counter to $1000.
 
@@ -362,7 +364,7 @@ Assigns the value of an expression to a label.
 
 **Syntax:** `.BYTE` \<expression\>\|\<string\>\[`,` \<expression\>\|\<string\>\]\*
 	
-Generates individual bytes of object code. For expressions, the low order byte of the expression value is added to the object code. For strings, that is ASCII characters enclosed in double quotes (`"`), each character produces a byte, which is added to the object code.  
+Generates individual bytes of object code. For expressions, the low order byte of the expression value is added to the object code. For strings, that is, ASCII characters enclosed in double quotes (`"`), each character produces a byte, which is added to the object code.  
 
 **Example:** `.BYTE 1,-1,1+2,"HELLO",'!` produces `01 FF 03 48 45 4C 4C 4F 21`
 
@@ -377,20 +379,19 @@ Generates individual 16-bit words of object code. First, the low order byte of t
 ## Build Instructions
 
 ### Prerequisites
-* You have Java SDK 5 (or higher) installed on your system.
+* You have Java SDK 5 or higher installed on your system.
 
 ### Instructions
-1. Download this project's ZIP file from GitHub and unzip it to a temporary folder.
-
-2. **To work with the Atari 6502 Assembler source code in your Eclipse IDE**, import the `Atari6502Assembler` project in your Eclipse IDE from the temporary folder, choosing as import source _General > Existing Projects into Workspace_.
-
-3. **To compile Atari 6502 Assembler into a convenient JAR file** (Windows only), open a command prompt in the temporary folder and enter
+1. Download this project&rsquo;s ZIP file from GitHub.
+2. Unzip it to a temporary folder.
+3. **To work with the _Atari 6502 Assembler_ source code in your Eclipse IDE**, import the `Atari6502Assembler` project into your Eclipse IDE from the temporary folder, choosing as import source _General > Existing Projects into Workspace_.
+4. **To compile _Atari 6502 Assembler_ into a convenient JAR file** (Windows only), open a command prompt in the temporary folder and enter
    ```
    makejar
    ```
    This produces the `Atari6502Assembler.jar` file, containing the compiled Atari 6502 Assembler.
 
-   (Note that the environment variable JAVA_HOME must point to the installation folder of your Java SDK.)
+   (Note that the environment variable `JAVA_HOME` must point to the installation folder of your Java SDK.)
 
 ## License
 
