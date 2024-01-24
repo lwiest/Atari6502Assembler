@@ -73,13 +73,13 @@ Option       | Values               | Description
 :------------|:--------------------:|:-----------
 `showHeader` | `true`,&nbsp;`false` | If `true` then print a header line (containing the date of the assembly) at the start of the assembly output listing (default: `true`).
 `showObject` | `true`,&nbsp;`false` | If `true` then print the bytes of the object code, including the corresponding memory addresses, at the start of each line of the assembly output listing (default: `true`).
-`showLineNumbers` | `true`,&nbsp;`false` | If `true` then print a line number at the beginning of each line of the assembly language source code in the assembly output listing (default: `true`). See also `lineNumberStart`, `lineNumberInc`, and `padLineNumbers`.
+`showLineNumbers` | `true`,&nbsp;`false` | If `true` then print a line number for each line of the assembly output listing (default: `true`). See also `lineNumberStart`, `lineNumberInc`, and `padLineNumbers`.
 `showSymbolList` | `true`,&nbsp;`false` | If `true` then print the symbol list at the end of the assembly output listing (default: `true`).
 `lineNumberStart` | `0`, `1`, `2`, ... | Sets the first line number of the assembly language source code. This number is a positive integer or 0 (default: `1`). See also `showLineNumbers`.
 `lineNumberInc` | `1`, `2`, `3`, ... | Sets the line number increment for each line of the assembly language source code. This number is a positive integer (default: `1`). See also `showLineNumbers`.
 `padLineNumbers` | `true`,&nbsp;`false` | If `true` then pad the line numbers with `0`, if `false` then pad the line numbers with space characters (default: `true`). See also `showLineNumbers`.
 `instructionPos` | `0`, `1`, `2`, ... | Sets the column number at which instructions are printed in the assembly output listing. This number is a positive integer or 0. Column number 0 is the column of the first label character (default: `16`).
-`labelExprPos` | `0`, `1`, `2`, ... | Sets the column number at which label expressions are printed in the assembly output listing. This number is a positive integer. Column number 0 is the column of the first label character (default: `16`).
+`labelExprPos` | `0`, `1`, `2`, ... | Sets the column number at which label expressions are printed in the assembly output listing. This number is a positive integer or 0. Column number 0 is the column of the first label character (default: `16`).
 `commentPos` | `0`, `1`, `2`, ... | Sets the column number at which comments are printed in the assembly output listing. This number is a positive integer or 0. If this number is 0, then this option is ignored and comments are not rearranged in the assembly output listing. Comments at column number 0 are never rearranged in the assembly output listing. Column number 0 is the column of the first label character (default: `0`).
 
 ## Assembling a "Hello World!" Sample
@@ -280,7 +280,7 @@ Labels are case-insensitive. For example, label `START` is the same as label `st
 
 Instructions are case-insensitive. For example, instruction `LDA` is the same as instruction `lda`.
 
-**\<operand\>**	- The operand of the instruction. An operand has one of the following formats:
+**\<operand\>**	- The operand of the instruction. Instructions often work with only a subset of operands. An operand has one of the following formats:
 
 Operand             | Format                                | Example
 :-------------------|:--------------------------------------|:---------
@@ -296,8 +296,6 @@ Indexed indirect    | `(`\<argument\>`,X)`                  | `LDA ($80,X)`
 Indirect indexed    | `(`\<argument\>`),Y`                  | `LDA ($80),Y` 
 Relavtive           | \<argument\>                          | `BNE $03` 
 
-Instructions often work with only a subset of operands.
-
 **\<argument\>** 	- An argument is one of the following:
 
 Argument             | Examples     | Description
@@ -309,13 +307,13 @@ Character constant   | `'A`           | A single quote (`'`), followed by an ASC
 Label                | `START`, `FOO`   | See above
 Expression           | `START+$1F`    | See [Expressions](#expressions)
 
-**\<directive\>** 	- A directive, see [Directives](#directives)
+**\<directive\>** 	- A directive, see [Directives](#directives).
 
 **\<comment\>**	- A comment. It starts with a semicolon (`;`) and ends at the end of the line.
 
 ### Expressions
 
-An expression is a combination of arguments and operators. It is evaluated to a 16-bit unsigned number, ignoring overflows. The following operators are supported:
+An expression is a combination of arguments and operators. It is evaluated to a 16-bit unsigned number, ignoring arithmetic overflows. The following operators are supported:
 
 Operator | Description                       | Example       | Result
 :-------:|:----------------------------------|:--------------|:------
@@ -380,12 +378,12 @@ Generates individual 16-bit words of object code. First, the low order byte of t
 ## Build Instructions
 
 ### Prerequisites
-* You have Java SDK 5 or higher installed on your system.
+* You have installed Java SDK 5 or higher on your system.
 
 ### Instructions
 1. Download this project&rsquo;s ZIP file from GitHub.
 2. Unzip it to a temporary folder.
-3. **To work with the _Atari 6502 Assembler_ source code in your Eclipse IDE**, import the `Atari6502Assembler` project into your Eclipse IDE from the temporary folder, choosing as import source _General > Existing Projects into Workspace_.
+3. **To work with the _Atari 6502 Assembler_ source code in your Eclipse IDE**, import the `Atari6502Assembler` project from the temporary folder into your Eclipse IDE as an import source _General > Existing Projects into Workspace_.
 4. **To compile _Atari 6502 Assembler_ into a convenient JAR file** (Windows only), open a command prompt in the temporary folder and enter
    ```
    makejar
