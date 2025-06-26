@@ -30,7 +30,7 @@ import de.lorenzwiest.atari6502assembler.Atari6502Assembler;
 
 public class Atari6502AssemblerTests {
 
-	private final static String[] EMPTY_ARRAY = new String[0];
+	private static final String[] EMPTY_ARRAY = new String[0];
 
 	@Test
 	public void testTokenizeByteArgList() {
