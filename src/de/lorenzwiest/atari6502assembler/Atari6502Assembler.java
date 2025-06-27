@@ -220,7 +220,7 @@ public class Atari6502Assembler {
 
 	private static final String CR = System.getProperty("line.separator");
 
-	private final static String HELP_TEXT =
+	private static final String HELP_TEXT =
 			"   _  _            _    __ ___  __ ___     _                     _    _" + CR + //
 			"  /_\\| |_ __ _ _ _(_)  / /| __|/  \\_  )   /_\\   ______ ___ _ __ | |__| |___ _ _" + CR + //
 			" / _ \\  _/ _` | '_| | / _ \\__ \\ () / /   / _ \\ (_-<_-</ -_) '  \\| '_ \\ | -_) '_|" + CR + //
@@ -245,7 +245,7 @@ public class Atari6502Assembler {
 			"<outfile>  - Assembly output binary file" + CR + //
 			"<listfile> - Assembly output listing file";
 
-	private final static String HEADER_TEXT = "Atari 6502 Assembler - Assembly Date: %s";
+	private static final String HEADER_TEXT = "Atari 6502 Assembler - Assembly Date: %s";
 
 	private SymbolTable symbolTable = new SymbolTable();
 	private ExpressionEvaluator evaluator = new ExpressionEvaluator(this.symbolTable);
@@ -620,7 +620,7 @@ public class Atari6502Assembler {
 		}
 	}
 
-	private final static int NYBBLES_PER_LINE = 8;
+	private static final int NYBBLES_PER_LINE = 8;
 
 	private String formatLine(String strPc, String strBytes, int lstLineNumber, LineOfCode parsedLineOfCode) {
 		StringBuffer sb = new StringBuffer();
