@@ -136,7 +136,7 @@ public class Atari6502Assembler {
 		 * *                    | Match any of those, consumed greedily
 		 * ;                    | Match semicolon (;)
 		 */
-		final static private Pattern COMMENT_PATTERN = Pattern.compile("^(\"[^\"]*?\"|'.|[^'\";])*;");
+		private static final Pattern COMMENT_PATTERN = Pattern.compile("^(\"[^\"]*?\"|'.|[^'\";])*;");
 
 		/*
 		 * ^                    | Start of string
@@ -152,7 +152,7 @@ public class Atari6502Assembler {
 		 * )                    | End unnamed capture group
 		 * )                    | End unnamed capture group
 		 */
-		final static private Pattern PATTERN_LINE_NUMBER = Pattern.compile("^\\s*(?:(\\d{1,5})(?:\\s|$))");
+		private static final Pattern PATTERN_LINE_NUMBER = Pattern.compile("^\\s*(?:(\\d{1,5})(?:\\s|$))");
 
 		/*
 		 * ^                    | Start of string
@@ -161,7 +161,7 @@ public class Atari6502Assembler {
 		 * [A-Za-z0-9@:\\?\\.]* | Match any characters that are a letter, digit, at-sign (@), colon (:), question mark (?), or period (.), consumed greedily
 		 * )                    | End capture group 1
 		 */
-		final static private Pattern PATTERN_LABEL = Pattern.compile("^([A-Za-z@:\\?][A-Za-z0-9@:\\?\\.]*)");
+		private static final Pattern PATTERN_LABEL = Pattern.compile("^([A-Za-z@:\\?][A-Za-z0-9@:\\?\\.]*)");
 
 		/*
 		 * ^                 | Start of string
@@ -178,7 +178,7 @@ public class Atari6502Assembler {
 		 * [A-Z]{3}          | 3 letters  (case-insensitive)
 		 * )                 | End capture group 1
 		 */
-		final static private Pattern PATTERN_OP = Pattern.compile("^\\s+(\\*=|=|\\.BYTE\\s|\\.WORD\\s|[A-Z]{3})", Pattern.CASE_INSENSITIVE);
+		private static final Pattern PATTERN_OP = Pattern.compile("^\\s+(\\*=|=|\\.BYTE\\s|\\.WORD\\s|[A-Z]{3})", Pattern.CASE_INSENSITIVE);
 
 		public static LineOfCode parse(String str) {
 			LineOfCode instance = new LineOfCode();
@@ -1033,7 +1033,7 @@ public class Atari6502Assembler {
 	 * $            | ..end of string
 	 * )            | End unnamed capture group
 	 */
-	final static private Pattern ARG_PATTERN = Pattern.compile("^\\s*+(\"[^\"]*?\"|(?:'.|[^\"',\\s])+?)\\s*?(?:,|$)");
+	private static final Pattern ARG_PATTERN = Pattern.compile("^\\s*+(\"[^\"]*?\"|(?:'.|[^\"',\\s])+?)\\s*?(?:,|$)");
 
 	// public visibility for tests
 	public static String[] tokenizeByteArgList(String str) {

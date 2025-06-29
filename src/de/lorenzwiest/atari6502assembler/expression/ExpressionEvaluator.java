@@ -194,7 +194,7 @@ public class ExpressionEvaluator {
 	 * [A-Za-z0-9@\\?:]*? | Match one character out of "A-Za-z0-9@?:", consumed progressively
 	 * )                  | End capture group 1
 	 */
-	final static private Pattern SYMBOL_NAME_PATTERN = Pattern.compile("^\\s*?([A-Za-z@\\?:][A-Za-z0-9\\.@\\?:]*+)");
+	private static final Pattern SYMBOL_NAME_PATTERN = Pattern.compile("^\\s*?([A-Za-z@\\?:][A-Za-z0-9\\.@\\?:]*+)");
 
 	private Integer evaluateNumSymbol() {
 		String symbolName = findMatch(SYMBOL_NAME_PATTERN);
@@ -220,7 +220,7 @@ public class ExpressionEvaluator {
 	 * [0-9]{1,5}         | Match one to five decimal digits (0..9)
 	 * )                  | End capture group 1
 	 */
-	final static private Pattern DECIMAL_CONSTANT_PATTERN = Pattern.compile("^\\s*?([0-9]{1,5})");
+	private static final Pattern DECIMAL_CONSTANT_PATTERN = Pattern.compile("^\\s*?([0-9]{1,5})");
 
 	/*
 	 * ^                  | Start of string
@@ -230,7 +230,7 @@ public class ExpressionEvaluator {
 	 * [0-9A-F-a-f]{1,4}  | Match one to four hexadecimal digits (0..9A..F)
 	 * )                  | End capture group 1
 	 */
-	final static private Pattern HEX_CONSTANT_PATTERN = Pattern.compile("^\\s*?(\\$[0-9A-Fa-f]{1,4})");
+	private static final Pattern HEX_CONSTANT_PATTERN = Pattern.compile("^\\s*?(\\$[0-9A-Fa-f]{1,4})");
 
 	/*
 	 * ^                  | Start of string
@@ -240,7 +240,7 @@ public class ExpressionEvaluator {
 	 * [01]{1,16}         | Match one to sixteen binary digits (0..1)
 	 * )                  | End capture group 1
 	 */
-	final static private Pattern BINARY_CONSTANT_PATTERN = Pattern.compile("^\\s*?(%[01]{1,16})");
+	private static final Pattern BINARY_CONSTANT_PATTERN = Pattern.compile("^\\s*?(%[01]{1,16})");
 
 	/*
 	 * ^                  | Start of string
@@ -250,7 +250,7 @@ public class ExpressionEvaluator {
 	 * .                  | Match one character
 	 * )                  | End capture group 1
 	 */
-	final static private Pattern CHAR_LITERAL_PATTERN = Pattern.compile("^\\s*?('.)");
+	private static final Pattern CHAR_LITERAL_PATTERN = Pattern.compile("^\\s*?('.)");
 
 	private Integer evaluateNumConst() {
 		String strNumConstant;
@@ -284,7 +284,7 @@ public class ExpressionEvaluator {
 	 * \s*+               | Match any whitespace, consumed possessively
 	 * )                  | End capture group 1
 	 */
-	final static private Pattern LEADING_WHITESPACE_PATTERN = Pattern.compile("^(\\s*+)");
+	private static final Pattern LEADING_WHITESPACE_PATTERN = Pattern.compile("^(\\s*+)");
 
 	private boolean isNextToken(String token) {
 		int posSave = this.pos;
