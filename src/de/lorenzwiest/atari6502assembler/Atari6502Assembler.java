@@ -86,7 +86,7 @@ public class Atari6502Assembler {
 	///////////////////////////////////////////////////////////////////////////
 
 	static public class LineOfCode {
-		final private static String EMPTY_STRING = "";
+		private static final String EMPTY_STRING = "";
 
 		private String label = EMPTY_STRING;
 		private String op = EMPTY_STRING;
