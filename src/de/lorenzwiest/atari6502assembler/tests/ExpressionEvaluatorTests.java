@@ -30,7 +30,6 @@ import de.lorenzwiest.atari6502assembler.exception.ExpressionException;
 import de.lorenzwiest.atari6502assembler.expression.ExpressionEvaluator;
 
 public class ExpressionEvaluatorTests {
-
 	private static final int ERROR = -1;
 
 	@Test

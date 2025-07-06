@@ -25,7 +25,6 @@
 package de.lorenzwiest.atari6502assembler.exception;
 
 public class AssemblerException extends RuntimeException {
-
 	private String errorMessage;
 
 	public AssemblerException(String errorMessage) {

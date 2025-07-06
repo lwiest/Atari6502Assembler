@@ -25,7 +25,6 @@
 package de.lorenzwiest.atari6502assembler.symbol;
 
 public class Symbol {
-
 	private String name;
 	private int value;
 	private boolean hasValue;

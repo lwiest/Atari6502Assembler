@@ -36,7 +36,6 @@ import de.lorenzwiest.atari6502assembler.symbol.Symbol;
 import de.lorenzwiest.atari6502assembler.symbol.SymbolTable;
 
 public class ExpressionEvaluator {
-
 	private static final String PLUS = "+";
 	private static final String MINUS = "-";
 	private static final String MULTIPLY = "*";

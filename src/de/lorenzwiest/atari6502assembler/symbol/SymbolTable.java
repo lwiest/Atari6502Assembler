@@ -35,7 +35,6 @@ import de.lorenzwiest.atari6502assembler.exception.assembler.DuplicateSymbolExce
 import de.lorenzwiest.atari6502assembler.exception.assembler.IllegalSymbolNameException;
 
 public class SymbolTable {
-
 	private TreeMap<String, Symbol> symbolTable = new TreeMap<String, Symbol>();
 
 	public void put(String name, SymbolType type) throws AssemblerException {

@@ -29,7 +29,6 @@ import org.junit.Test;
 import de.lorenzwiest.atari6502assembler.Atari6502Assembler;
 
 public class Atari6502AssemblerTests {
-
 	private static final String[] EMPTY_ARRAY = new String[0];
 
 	@Test
