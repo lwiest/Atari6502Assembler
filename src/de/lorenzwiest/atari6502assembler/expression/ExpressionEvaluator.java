@@ -43,8 +43,8 @@ public class ExpressionEvaluator {
 	private static final String AND = "&";
 	private static final String OR = "!";
 	private static final String XOR = "^";
-	private static final String OPEN = "[";
-	private static final String CLOSE = "]";
+	private static final String OPENING_BRACKET = "[";
+	private static final String CLOSING_BRACKET = "]";
 	private static final String HI_BYTE = ">";
 	private static final String LO_BYTE = "<";
 
@@ -172,12 +172,12 @@ public class ExpressionEvaluator {
 			}
 		}
 		if (result == null) {
-			if (isNextToken(OPEN)) {
+			if (isNextToken(OPENING_BRACKET)) {
 				result = evaluateNumExpr();
 				if (result == null) {
-					throw new InvalidExpressionException("Missing or invalid expression after \"" + OPEN + "\"");
+					throw new InvalidExpressionException("Missing or invalid expression after \"" + OPENING_BRACKET + "\"");
 				}
-				if (isNextToken(CLOSE) == false) {
+				if (isNextToken(CLOSING_BRACKET) == false) {
 					throw new InvalidExpressionException("Missing closing bracket in expression");
 				}
 			}
